@@ -31,10 +31,7 @@ func (bc *Blockchain) AddBlock(data string) {
 		log.Panic(err)
 	}
 
-
-	//prevBlock := bc.blocks[len(bc.blocks) -1]
 	newBlock := NewBlock(data, lastHash)
-	//bc.blocks = append(bc.blocks, newBlock)
 
 	err = bc.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(blocksBucket))
