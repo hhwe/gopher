@@ -33,12 +33,15 @@ func (bc *Blockchain) AddBlock(data string) {
 
 
 	//prevBlock := bc.blocks[len(bc.blocks) -1]
-	newBlock := NewBlock(data, prevBlock.Hash)
+	newBlock := NewBlock(data, lastHash)
 	//bc.blocks = append(bc.blocks, newBlock)
 
 	err = bc.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(blocksBucket))
 		err := b.Put(newBlock.Hash, newBlock.Serialize())
+		if err != nil {
+			log.Panic(err)
+		}
 		err = b.Put([]byte("1"), newBlock.Hash)
 		bc.tip = newBlock.Hash
 
@@ -46,7 +49,7 @@ func (bc *Blockchain) AddBlock(data string) {
 	})
 }
 
-func (b *Blockchain) Iterator() *BlockChainIterator {
+func (bc *Blockchain) Iterator() *BlockChainIterator {
 	bci := &BlockChainIterator{bc.tip, bc.db}
 
 	return bci
@@ -62,6 +65,9 @@ func (i *BlockChainIterator) Next() *Block {
 
 		return nil
 	})
+	if err != nil {
+		log.Panic(err)
+	}
 
 	i.currentHash = block.PrevBlockHash
 
