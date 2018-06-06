@@ -49,7 +49,7 @@ func (in *TXInput) CanUnlockOutputWith(unlockingData string) bool {
 	return in.ScriptSig == unlockingData
 }
 
-func (out *TXOutput) CanUnBelockedWith(unlockingData string) bool {
+func (out *TXOutput) CanBeUnlockedWith(unlockingData string) bool {
 	return out.ScriptPubKey == unlockingData
 }
 
@@ -70,7 +70,7 @@ func NewUTXOTransaction(from, to string, amount int, bc *Blockchain) *Transactio
 	var inputs []TXInput
 	var outputs []TXOutput
 
-	acc, validOutputs := bc.FindSpendableOutputs(from , to)
+	acc, validOutputs := bc.FindSpendableOutputs(from, amount)
 	if acc < amount {
 		log.Panic("ERROR: Not enough funds")
 	}
