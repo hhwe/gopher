@@ -7,7 +7,7 @@ import (
 
 const bits = 24
 
-func main() {
+func main_test() {
 	target := big.NewInt(1)
 	fmt.Printf("%T, %d\n", target, target)
 	target.Lsh(target, uint(256-bits))

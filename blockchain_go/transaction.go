@@ -11,21 +11,24 @@ import (
 
 const subsidy = 10
 
-type Transaction struct {
-	ID []byte
-	Vin []TXInput
-	Vout []TXOutput
-}
-
 type TXInput struct {
 	Txid []byte
 	Vout int
+	// scriptsig用于解锁scriptpubkey
 	ScriptSig string
 }
 
 type TXOutput struct {
 	Value int
+	// 控制交易锁定的脚本即密码
 	ScriptPubKey string
+}
+
+// 交易信息包含inputs和outputs
+type Transaction struct {
+	ID []byte
+	Vin []TXInput
+	Vout []TXOutput
 }
 
 func (tx Transaction) IsCoinbase() bool {
@@ -89,7 +92,7 @@ func NewUTXOTransaction(from, to string, amount int, bc *Blockchain) *Transactio
 
 	outputs = append(outputs, TXOutput{amount, to})
 	if acc > amount {
-		outputs = append(outputs, TXOutput{acc - amount, to})
+		outputs = append(outputs, TXOutput{acc - amount, from})
 	}
 
 	tx := Transaction{nil, inputs, outputs}

@@ -27,7 +27,7 @@ func (bc *Blockchain) AddBlock(transactions []*Transaction) {
 
 	err := bc.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(blocksBucket))
-		lastHash = b.Get([]byte("1"))
+		lastHash = b.Get([]byte("l"))
 
 		return nil
 	})
@@ -43,7 +43,7 @@ func (bc *Blockchain) AddBlock(transactions []*Transaction) {
 		if err != nil {
 			log.Panic(err)
 		}
-		err = b.Put([]byte("1"), newBlock.Hash)
+		err = b.Put([]byte("l"), newBlock.Hash)
 		bc.tip = newBlock.Hash
 
 		return nil
@@ -96,7 +96,7 @@ func NewBlockchain(address string) *Blockchain {
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(blocksBucket))
-		tip = b.Get([]byte("1"))
+		tip = b.Get([]byte("l"))
 
 		return nil
 	})
@@ -110,7 +110,7 @@ func NewBlockchain(address string) *Blockchain {
 }
 
 func CreateBlockchain(address string) *Blockchain {
-	if dbExists() == false {
+	if dbExists() {
 		fmt.Println("Blockchain already exists.")
 		os.Exit(1)
 	}
@@ -134,7 +134,7 @@ func CreateBlockchain(address string) *Blockchain {
 			log.Panic(err)
 		}
 
-		err = b.Put([]byte("1"), genesis.Hash)
+		err = b.Put([]byte("l"), genesis.Hash)
 		if err != nil {
 			log.Panic(err)
 		}
@@ -222,7 +222,7 @@ func (bc *Blockchain) FindUnspentTransactions(address string) []Transaction {
 			}
 		}
 
-		if len(block.PrevBlockHash) == 90 {
+		if len(block.PrevBlockHash) == 0 {
 			break
 		}
 	}
