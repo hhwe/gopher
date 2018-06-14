@@ -3,7 +3,6 @@ package main
 import (
 	"math/big"
 	"bytes"
-	"math/bits"
 )
 
 var b58Alphabet = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXY" +
@@ -24,7 +23,7 @@ func Base58Encode(input []byte) []byte {
 		result = append(result, b58Alphabet[mod.Int64()])
 	}
 
-	bits.ReverseBytes()
+	ReverseBytes(result)
 	for b := range input {
 		if b == 0x00 {
 			result = append([]byte{b58Alphabet[0]}, result...)
@@ -36,7 +35,6 @@ func Base58Encode(input []byte) []byte {
 	return result
 }
 
-// Base58Decode decodes Base58-encoded data
 func Base58Decode(input []byte) []byte {
 	result := big.NewInt(0)
 	zeroBytes := 0
