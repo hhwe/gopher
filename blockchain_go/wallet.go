@@ -6,8 +6,7 @@ import (
 	"crypto/rand"
 	"log"
 	"crypto/sha256"
-
-	"golang.org/x/crypto/ripemd160"
+	"crypto"
 )
 
 const version = byte(0x00)
@@ -53,7 +52,7 @@ func checksum(payload []byte) []byte {
 func HashPubKey(pubKey []byte) []byte {
 	publicSHA256 := sha256.Sum256(pubKey)
 
-	RIPEMD160Hasher := ripemd.New()
+	RIPEMD160Hasher := crypto.RIPEMD160.New()
 	_, err := RIPEMD160Hasher.Write(publicSHA256[:])
 	if err != nil {
 		log.Panic(err)
