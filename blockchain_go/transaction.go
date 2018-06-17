@@ -14,14 +14,13 @@ const subsidy = 10
 type TXInput struct {
 	Txid []byte
 	Vout int
-	// scriptsig用于解锁scriptpubkey
-	ScriptSig string
+	Signature []byte
+	PubKey []byte
 }
 
 type TXOutput struct {
 	Value int
-	// 控制交易锁定的脚本即密码
-	ScriptPubKey string
+	PubKeyHash []byte
 }
 
 // 交易信息包含inputs和outputs
@@ -29,6 +28,22 @@ type Transaction struct {
 	ID []byte
 	Vin []TXInput
 	Vout []TXOutput
+}
+
+func (in *TXInput) UsesKey(pubKeyHash []byte) bool {
+	lockingHash := HashPubKey(in.PubKey)
+
+	return bytes.Compare(lockingHash, pubKeyHash) == 0
+}
+
+func (out *TXOutput) Lock(address []byte) {
+	pubKeyHash := Base58Decode(address)
+	pubKeyHash = pubKeyHash[1:len(pubKeyHash)-4]
+	out.PubKeyHash = pubKeyHash
+}
+
+func (out *TXOutput) IsLockedWithKey(pubKeyHash []byte) bool {
+	return bytes.Compare(out.PubKeyHash, pubKeyHash) == 0
 }
 
 func (tx Transaction) IsCoinbase() bool {
