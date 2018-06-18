@@ -13,3 +13,7 @@
 
 # Configuration file from GoLand
 .idea/
+
+# Database file
+*.db
+
