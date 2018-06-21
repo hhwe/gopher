@@ -47,35 +47,38 @@ We will use $ to represent the command prompt.
 Install Go (see the Installation Instructions).
 
 Make a new directory for this tutorial inside your GOPATH and cd to it:
-
-    $ mkdir gowiki
-    $ cd gowiki
-
+``` sh
+$ mkdir gowiki
+$ cd gowiki
+```
 Create a file named wiki.go, open it in your favorite editor, and add the following lines:
-
+``` go
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
+    "fmt"
+    "io/ioutil"
 )
+```
 We import the fmt and ioutil packages from the Go standard library. Later, as we implement additional functionality, we will add more packages to this import declaration.
 
 Data Structures
 Let's start by defining the data structures. A wiki consists of a series of interconnected pages, each of which has a title and a body (the page content). Here, we define Page as a struct with two fields representing the title and body.
-
+``` go
 type Page struct {
     Title string
     Body  []byte
 }
+```
 The type []byte means "a byte slice". (See Slices: usage and internals for more on slices.) The Body element is a []byte rather than string because that is the type expected by the io libraries we will use, as you'll see below.
 
 The Page struct describes how page data will be stored in memory. But what about persistent storage? We can address that by creating a save method on Page:
-
+``` go
 func (p *Page) save() error {
     filename := p.Title + ".txt"
     return ioutil.WriteFile(filename, p.Body, 0600)
 }
+```
 This method's signature reads: "This is a method named save that takes as its receiver p, a pointer to Page . It takes no parameters, and returns a value of type error."
 
 This method will save the Page's Body to a text file. For simplicity, we will use the Title as the file name.
@@ -85,18 +88,19 @@ The save method returns an error value because that is the return type of WriteF
 The octal integer literal 0600, passed as the third parameter to WriteFile, indicates that the file should be created with read-write permissions for the current user only. (See the Unix man page open(2) for details.)
 
 In addition to saving pages, we will want to load pages, too:
-
+``` go
 func loadPage(title string) *Page {
     filename := title + ".txt"
     body, _ := ioutil.ReadFile(filename)
     return &Page{Title: title, Body: body}
 }
+```
 The function loadPage constructs the file name from the title parameter, reads the file's contents into a new variable body, and returns a pointer to a Page literal constructed with the proper title and body values.
 
 Functions can return multiple values. The standard library function io.ReadFile returns []byte and error. In loadPage, error isn't being handled yet; the "blank identifier" represented by the underscore (_) symbol is used to throw away the error return value (in essence, assigning the value to nothing).
 
 But what happens if ReadFile encounters an error? For example, the file might not exist. We should not ignore such errors. Let's modify the function to return *Page and error.
-
+``` go
 func loadPage(title string) (*Page, error) {
     filename := title + ".txt"
     body, err := ioutil.ReadFile(filename)
@@ -105,22 +109,25 @@ func loadPage(title string) (*Page, error) {
     }
     return &Page{Title: title, Body: body}, nil
 }
+```
 Callers of this function can now check the second parameter; if it is nil then it has successfully loaded a Page. If not, it will be an error that can be handled by the caller (see the language specification for details).
 
 At this point we have a simple data structure and the ability to save to and load from a file. Let's write a main function to test what we've written:
-
+``` go
 func main() {
     p1 := &Page{Title: "TestPage", Body: []byte("This is a sample Page.")}
     p1.save()
     p2, _ := loadPage("TestPage")
     fmt.Println(string(p2.Body))
 }
+```
 After compiling and executing this code, a file named TestPage.txt would be created, containing the contents of p1. The file would then be read into the struct p2, and its Body element printed to the screen.
 
 You can compile and run the program like this:
-
+``` sh
 $ go build wiki.go
 $ ./wiki
+```
 This is a sample Page.
 (If you're using Windows you must type "wiki" without the "./" to run the program.)
 
@@ -128,7 +135,7 @@ Click here to view the code we've written so far.
 
 Introducing the net/http package (an interlude)
 Here's a full working example of a simple web server:
-
+``` go
 package main
 
 import (
@@ -145,6 +152,7 @@ func main() {
     http.HandleFunc("/", handler)
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
+```
 The main function begins with a call to http.HandleFunc, which tells the http package to handle all requests to the web root ("/") with handler.
 
 It then calls http.ListenAndServe, specifying that it should listen on port 8080 on any interface (":8080"). (Don't worry about its second parameter, nil, for now.) This function will block until the program is terminated.
@@ -158,26 +166,27 @@ An http.ResponseWriter value assembles the HTTP server's response; by writing to
 An http.Request is a data structure that represents the client HTTP request. r.URL.Path is the path component of the request URL. The trailing [1:] means "create a sub-slice of Path from the 1st character to the end." This drops the leading "/" from the path name.
 
 If you run this program and access the URL:
-
-http://localhost:8080/monkeys
+[http://localhost:8080/monkeys](http://localhost:8080/monkeys)
 the program would present a page containing:
 
 Hi there, I love monkeys!
 Using net/http to serve wiki pages
 To use the net/http package, it must be imported:
-
+``` go
 import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
 )
+```
 Let's create a handler, viewHandler that will allow users to view a wiki page. It will handle URLs prefixed with "/view/".
-
+``` go
 func viewHandler(w http.ResponseWriter, r *http.Request) {
     title := r.URL.Path[len("/view/"):]
     p, _ := loadPage(title)
     fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", p.Title, p.Body)
 }
+```
 Again, note the use of _ to ignore the error return value from loadPage. This is done here for simplicity and generally considered bad practice. We will attend to this later.
 
 First, this function extracts the page title from r.URL.Path, the path component of the request URL. The Path is re-sliced with [len("/view/"):] to drop the leading "/view/" component of the request path. This is because the path will invariably begin with "/view/", which is not part of the page's title.
