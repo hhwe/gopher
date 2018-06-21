@@ -17,3 +17,8 @@
 # Database file
 *.db
 *.dat
+
+# Other book file
+*.txt
+*.pdf
+*.doc
