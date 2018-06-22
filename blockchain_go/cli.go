@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"flag"
+	"fmt"
 	"log"
+	"os"
 )
 
-type CLI struct {}
+type CLI struct{}
 
 func (cli *CLI) printUsage() {
 	fmt.Println("Usage:")

@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bytes"
+	"crypto/sha256"
+	"fmt"
 	"math"
 	"math/big"
-	"bytes"
-	"fmt"
-	"crypto/sha256"
 )
 
 var (
@@ -15,7 +15,7 @@ var (
 const targetBits = 24
 
 type ProofOfWork struct {
-	block *Block
+	block  *Block
 	target *big.Int
 }
 
@@ -69,7 +69,7 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 			fmt.Printf("\r%x", hash)
 			break
 		} else {
-			nonce ++
+			nonce++
 		}
 	}
 	fmt.Print("\n\n")

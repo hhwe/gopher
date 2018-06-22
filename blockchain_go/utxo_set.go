@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/boltdb/bolt"
 	"encoding/hex"
+	"github.com/boltdb/bolt"
 	"log"
 )
 

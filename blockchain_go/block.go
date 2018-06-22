@@ -2,18 +2,18 @@ package main
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/gob"
 	"log"
-	"crypto/sha256"
 	"time"
 )
 
 type Block struct {
-	Timestamp int64
-	Transactions []*Transaction
+	Timestamp     int64
+	Transactions  []*Transaction
 	PrevBlockHash []byte
-	Hash []byte
-	Nonce int
+	Hash          []byte
+	Nonce         int
 }
 
 func (b *Block) Serialize() []byte {

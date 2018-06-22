@@ -2,23 +2,23 @@ package main
 
 import (
 	"bytes"
-	"encoding/gob"
-	"log"
-	"crypto/sha256"
-	"fmt"
-	"encoding/hex"
 	"crypto/ecdsa"
-	"crypto/rand"
-	"strings"
 	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/gob"
+	"encoding/hex"
+	"fmt"
+	"log"
 	"math/big"
+	"strings"
 )
 
 const subsidy = 10
 
 type Transaction struct {
-	ID []byte
-	Vin []TXInput
+	ID   []byte
+	Vin  []TXInput
 	Vout []TXOutput
 }
 
@@ -71,7 +71,7 @@ func (tx *Transaction) Sign(privKey ecdsa.PrivateKey, prevTXs map[string]Transac
 		return
 	}
 
-	for _, vin := range tx.Vin  {
+	for _, vin := range tx.Vin {
 		if prevTXs[hex.EncodeToString(vin.Txid)].ID == nil {
 			log.Panic("ERROR: Previous transaction is not correct")
 		}
@@ -203,7 +203,7 @@ func NewUTXOTransaction(from, to string, amount int, bc *Blockchain) *Transactio
 
 	outputs = append(outputs, *NewTXOutput(amount, to))
 	if acc > amount {
-		outputs = append(outputs, *NewTXOutput(acc - amount, from))
+		outputs = append(outputs, *NewTXOutput(acc-amount, from))
 	}
 
 	tx := Transaction{nil, inputs, outputs}

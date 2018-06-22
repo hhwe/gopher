@@ -1,14 +1,14 @@
 package main
 
 import (
-	"github.com/boltdb/bolt"
-	"log"
-	"encoding/hex"
-	"os"
-	"fmt"
-	"crypto/ecdsa"
 	"bytes"
+	"crypto/ecdsa"
+	"encoding/hex"
+	"fmt"
+	"github.com/boltdb/bolt"
 	"github.com/pkg/errors"
+	"log"
+	"os"
 )
 
 const dbFile = "blockchain.db"
@@ -17,7 +17,7 @@ const genesisCoinbaseData = "The Times 03/Jan/2009 Chancellor on brink of second
 
 type Blockchain struct {
 	tip []byte
-	db *bolt.DB
+	db  *bolt.DB
 }
 
 func (bc *Blockchain) AddBlock(transactions []*Transaction) {

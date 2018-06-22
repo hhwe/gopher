@@ -1,8 +1,8 @@
 package main
 
 import (
-	"math/big"
 	"bytes"
+	"math/big"
 )
 
 var b58Alphabet = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXY" +

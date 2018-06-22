@@ -1,13 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"github.com/pkg/errors"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"regexp"
-	"github.com/pkg/errors"
-	"fmt"
 )
 
 type Page struct {
