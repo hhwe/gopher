@@ -5,20 +5,63 @@ import (
 	"net/http"
 	"fmt"
 	"log"
+	"os"
+	"io"
 )
 
 func main() {
-	router := gin.Default()
+	// Creates a r without any middleware by default
+	//r := gin.New()
+
+	// Global middleware
+	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
+	// By default gin.DefaultWriter = os.Stdout
+	//r.Use(gin.Logger())
+
+	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+	//r.Use(gin.Recovery())
+
+	//// Per route middleware, you can add as many as you desire.
+	//r.GET("/benchmark", MyBenchLogger(), benchEndpoint)
+	//
+	//// Authorization group
+	//// authorized := r.Group("/", AuthRequired())
+	//// exactly the same as:
+	//authorized := r.Group("/")
+	//// per group middleware! in this case we use the custom created
+	//// AuthRequired() middleware just in the "authorized" group.
+	//authorized.Use(AuthRequired())
+	//{
+	//	authorized.POST("/login", loginEndpoint)
+	//	authorized.POST("/submit", submitEndpoint)
+	//	authorized.POST("/read", readEndpoint)
+	//
+	//	// nested group
+	//	testing := authorized.Group("testing")
+	//	testing.GET("/analytics", analyticsEndpoint)
+	//}
+
+	// Disable Console Color, you don't need console color when writing the logs to file.
+	gin.DisableConsoleColor()
+
+	// Logging to a file.
+	f, _ := os.Create("gin.log")
+	gin.DefaultWriter = io.MultiWriter(f)
+
+	// Use the following code if you need to write the logs to file and console at the same time.
+	// gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+
+	r := gin.Default()
 
 	// This handler will match /user/john but will not match neither /user/ or /user
-	router.GET("/user/:name", func(c *gin.Context) {
+	r.GET("/user/:name", func(c *gin.Context) {
 		name := c.Param("name")
 		c.String(http.StatusOK, "Hello %s", name)
 	})
 
 	// However, this one will match /user/john/ and also /user/john/send
-	// If no other routers match /user/john, it will redirect to /user/john/
-	router.GET("/user/:name/*action", func(c *gin.Context) {
+	// If no other rs match /user/john, it will redirect to /user/john/
+	r.GET("/user/:name/*action", func(c *gin.Context) {
 		name := c.Param("name")
 		action := c.Param("action")
 		message := name + " is " + action
@@ -27,14 +70,14 @@ func main() {
 
 	// Query string parameters are parsed using the existing underlying request object.
 	// The request responds to a url matching:  /welcome?firstname=Jane&lastname=Doe
-	router.GET("/welcome", func(c *gin.Context) {
+	r.GET("/welcome", func(c *gin.Context) {
 		firstname := c.DefaultQuery("firstname", "Guest")
 		lastname := c.Query("lastname") // shortcut for c.Request.URL.Query().Get("lastname")
 
 		c.String(http.StatusOK, "Hello %s %s", firstname, lastname)
 	})
 
-	router.POST("/form_post", func(c *gin.Context) {
+	r.POST("/form_post", func(c *gin.Context) {
 		message := c.PostForm("message")
 		nick := c.DefaultPostForm("nick", "anonymous")
 
@@ -45,7 +88,7 @@ func main() {
 		})
 	})
 
-	router.POST("/post", func(c *gin.Context) {
+	r.POST("/post", func(c *gin.Context) {
 
 		id := c.Query("id")
 		page := c.DefaultQuery("page", "0")
@@ -56,8 +99,8 @@ func main() {
 	})
 
 	// Set a lower memory limit for multipart forms (default is 32 MiB)
-	// router.MaxMultipartMemory = 8 << 20  // 8 MiB
-	router.POST("/upload", func(c *gin.Context) {
+	// r.MaxMultipartMemory = 8 << 20  // 8 MiB
+	r.POST("/upload", func(c *gin.Context) {
 		// single file
 		file, _ := c.FormFile("file")
 		log.Println(file.Filename)
@@ -69,7 +112,7 @@ func main() {
 	})
 
 	//// Simple group: v1
-	//v1 := router.Group("/v1")
+	//v1 := r.Group("/v1")
 	//{
 	//	v1.POST("/login", loginEndpoint)
 	//	v1.POST("/submit", submitEndpoint)
@@ -77,7 +120,7 @@ func main() {
 	//}
 	//
 	//// Simple group: v2
-	//v2 := router.Group("/v2")
+	//v2 := r.Group("/v2")
 	//{
 	//	v2.POST("/login", loginEndpoint)
 	//	v2.POST("/submit", submitEndpoint)
@@ -85,5 +128,5 @@ func main() {
 	//}
 
 
-	router.Run(":8080")
+	r.Run(":8080")
 }
