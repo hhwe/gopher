@@ -22,3 +22,6 @@
 *.txt
 *.pdf
 *.doc
+
+# dep file
+*vendor/
