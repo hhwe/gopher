@@ -3,7 +3,6 @@ package search
 import (
 	"encoding/json"
 	"os"
-
 )
 
 const dataFile = "goinaction/sample/data/data.json"

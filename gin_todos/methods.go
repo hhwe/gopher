@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"fmt"
-	"log"
-	"os"
+	"github.com/gin-gonic/gin"
 	"io"
+	"log"
+	"net/http"
+	"os"
 )
 
 func main() {
@@ -126,7 +126,6 @@ func main() {
 	//	v2.POST("/submit", submitEndpoint)
 	//	v2.POST("/read", readEndpoint)
 	//}
-
 
 	r.Run(":8080")
 }
