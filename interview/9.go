@@ -48,6 +48,7 @@ import "time"
 
 type ThreadSafeSet struct {
 	sync.RWMutex
+	sync.Map
 	s []int
 }
 
