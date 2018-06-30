@@ -300,13 +300,14 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 }
 ```
 Notice that we've used almost exactly the same templating code in both handlers. Let's remove this duplication by moving the templating code to its own function:
-
+``` go
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
     t, _ := template.ParseFiles(tmpl + ".html")
     t.Execute(w, p)
 }
+```
 And modify the handlers to use that function:
-
+``` go
 func viewHandler(w http.ResponseWriter, r *http.Request) {
     title := r.URL.Path[len("/view/"):]
     p, _ := loadPage(title)
@@ -320,11 +321,12 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
     }
     renderTemplate(w, "edit", p)
 }
+```
 If we comment out the registration of our unimplemented save handler in main, we can once again build and test our program. Click here to view the code we've written so far.
 
 Handling non-existent pages
 What if you visit /view/APageThatDoesntExist? You'll see a page containing HTML. This is because it ignores the error return value from loadPage and continues to try and fill out the template with no data. Instead, if the requested Page doesn't exist, it should redirect the client to the edit Page so the content may be created:
-
+``` go
 func viewHandler(w http.ResponseWriter, r *http.Request) {
     title := r.URL.Path[len("/view/"):]
     p, err := loadPage(title)
@@ -334,11 +336,12 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
     }
     renderTemplate(w, "view", p)
 }
+```
 The http.Redirect function adds an HTTP status code of http.StatusFound (302) and a Location header to the HTTP response.
 
 Saving Pages
 The function saveHandler will handle the submission of forms located on the edit pages. After uncommenting the related line in main, let's implement the handler:
-
+``` go
 func saveHandler(w http.ResponseWriter, r *http.Request) {
     title := r.URL.Path[len("/save/"):]
     body := r.FormValue("body")
@@ -346,6 +349,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
     p.save()
     http.Redirect(w, r, "/view/"+title, http.StatusFound)
 }
+```
 The page title (provided in the URL) and the form's only field, Body, are stored in a new Page. The save() method is then called to write the data to a file, and the client is redirected to the /view/ page.
 
 The value returned by FormValue is of type string. We must convert that value to []byte before it will fit into the Page struct. We use []byte(body) to perform the conversion.

@@ -23,8 +23,7 @@ func get_all(query *sql.Rows) []map[string]string {
 	for i := range values {
 		scans[i] = &values[i]
 	}
-	s := make(type, 0)
-	results := make([]map[string]string, len(column))
+	results := make([]map[string]string, 0)
 	for query.Next() {
 		if err := query.Scan(scans...); err != nil {
 			fmt.Println(err)

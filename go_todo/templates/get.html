@@ -2,4 +2,15 @@
 
 <p>[<a href="/add">add</a>]</p>
 
-<div>{{.}}</div>
+<div>
+    {{range .}}
+    <div>
+        <b>id: </b>{{ .id }}
+        <b>title: </b>{{ .title }}
+        <b>finished: </b>{{ .finished }}
+        <b>created: </b>{{ .created }}
+    </div>
+    {{ else }}
+    <div><strong>no rows</strong></div>
+    {{end}}
+</div>
