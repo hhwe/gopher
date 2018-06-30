@@ -13,7 +13,7 @@ func (cli *CLI) send(from, to string, amount int) {
 		log.Panic("ERROR: Recipient address is not valid")
 	}
 
-	bc := NewBlockchain()
+	bc := NewBlockchain("12")
 	UTXOSet := UTXOSet{bc}
 	defer bc.db.Close()
 
@@ -23,4 +23,5 @@ func (cli *CLI) send(from, to string, amount int) {
 
 	newBlock := bc.MineBlock(txs)
 	fmt.Println("Success!")
+
 }

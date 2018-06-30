@@ -5,10 +5,11 @@ import (
 	"crypto/ecdsa"
 	"encoding/hex"
 	"fmt"
-	"github.com/boltdb/bolt"
-	"github.com/pkg/errors"
 	"log"
 	"os"
+
+	"github.com/boltdb/bolt"
+	"github.com/pkg/errors"
 )
 
 const dbFile = "blockchain.db"
