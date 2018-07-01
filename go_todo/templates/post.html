@@ -1,16 +1,21 @@
-<h1>Todo List</h1>
+{{ define "container" }}
+    <h2 style="text-align: center">Todo list</h2>
+    <div class="table-responsive">
+        <div>
+            <form action="/post">
+                <label>title: 
+                    <input type="text" name="title">
+                </label>
+                <label>finished: 
+                    <input type="radio" name="finished" value="true" checked="checked">
+                    <input type="radio" name="finished" value="false">
+                </label>
+                <br>
+                <label>submit: <input type="submit"> </label>
+            </form>
+        </div>
+    </div>
+{{ end }}
 
-<div>
-    <form action="/post">
-        <label>title: 
-            <input type="text" name="title">
-        </label>
-        <label>finished: 
-            <input type="radio" name="finished" value="true">
-            <input type="radio" name="finished" value="false">
-        </label>
-        <label>submit: 
-            <input type="submit">
-        </label>
-    </form>
-</div>
+
+

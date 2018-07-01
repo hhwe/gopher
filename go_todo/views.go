@@ -35,7 +35,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	// renderTemplate(w, "index")
 
-	t, _ := template.ParseFiles("templates/index.html")
+	t, _ := template.ParseFiles("templates/layout.html", "templates/index.html")
 	t.Execute(w, nil)
 }
 
@@ -47,12 +47,12 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 
 	list := getAll(rows)
 
-	t, _ := template.ParseFiles("templates/get.html")
+	t, _ := template.ParseFiles("templates/layout.html", "templates/get.html")
 	t.Execute(w, list)
 }
 
 func editHandler(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("templates/post.html")
+	t, _ := template.ParseFiles("templates/layout.html", "templates/post.html")
 	t.Execute(w, nil)
 }
 

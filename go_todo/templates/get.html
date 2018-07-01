@@ -1,16 +1,53 @@
-<h1>Todo List</h1>
-
-<p>[<a href="/add">add</a>]</p>
-
-<div>
-    {{range .}}
-    <div>
-        <b>id: </b>{{ .id }}
-        <b>title: </b>{{ .title }}
-        <b>finished: </b>{{ .finished }}
-        <b>created: </b>{{ .created }}
+{{ define "container" }}
+    <h2 style="text-align: center">Todo list</h2>
+    <div class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Finished</th>
+                <th>Created</th>
+                <th>Add</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range . }}
+            <tr>
+                <td>{{ .id }}</td>
+                <td>{{ .title }}</td>
+                <td>{{ .finished }}</td>
+                <td>{{ .created }}</td>
+                <td>
+                    <a class="d-flex align-items-center text-muted" href="/edit">
+                        <span data-feather="plus-circle"></span>
+                    </a>
+                </td>
+                <td>
+                    <a class="d-flex align-items-center text-muted" href="/edit">
+                        <span data-feather="minus-circle"></span>
+                    </a>
+                </td>
+            {{ else }}
+            <tr>
+                <td>1,001</td>
+                <td>Lorem</td>
+                <td>ipsum</td>
+                <td>dolor</td>
+                <td>
+                    <a class="d-flex align-items-center text-muted" href="/edit">
+                        <span data-feather="plus-circle"></span>
+                    </a>
+                </td>
+                <td>
+                    <a class="d-flex align-items-center text-muted" href="/edit">
+                        <span data-feather="minus-circle"></span>
+                    </a>
+                </td>
+            </tr>            
+            {{ end }}
+        </tbody>
+    </table>
     </div>
-    {{ else }}
-    <div><strong>no rows</strong></div>
-    {{end}}
-</div>
+{{ end }}

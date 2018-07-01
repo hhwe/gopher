@@ -37,7 +37,6 @@ func getAll(query *sql.Rows) []map[string]string {
 			key := column[k]
 			row[key] = string(v)
 		}
-		fmt.Println(row)
 		results = append(results, row)
 	}
 	return results
