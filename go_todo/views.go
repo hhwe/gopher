@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 )
 
 func init() {
@@ -51,19 +52,20 @@ func addHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func postHandle(w http.ResponseWriter, r *http.Request) {
-	// stmt, err := db.Prepare("INSERT todo SET title=?,finished=?,created=?")
-	// if err != nil {
-	// 	log.Panic(err)
-	// }
-
-	// res, err := stmt.Exec("reading", false, time.Now())
-	// if err != nil {
-	// 	log.Panic(err)
-	// }
-	// fmt.Println(res.LastInsertId())
-
 	title := r.FormValue("title")
 	finished := r.FormValue("finished")
+	fmt.Println(title, finished)
+	stmt, err := db.Prepare("INSERT todo SET title=?,finished=?,created=?")
+	if err != nil {
+		log.Panic(err)
+	}
+
+	res, err := stmt.Exec(title, finished, time.Now())
+	if err != nil {
+		log.Panic(err)
+	}
+	fmt.Println(res.LastInsertId())
+
 	fmt.Println(title, finished)
 
 	http.Redirect(w, r, "/get", http.StatusFound)
