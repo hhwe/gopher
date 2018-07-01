@@ -25,7 +25,7 @@
                     </a>
                 </td>
                 <td>
-                    <a class="d-flex align-items-center text-muted" href="/edit">
+                    <a class="d-flex align-items-center text-muted" href="/delete/{{ .id }}">
                         <span data-feather="minus-circle"></span>
                     </a>
                 </td>
@@ -49,5 +49,18 @@
             {{ end }}
         </tbody>
     </table>
+    <button type="button" class="btn btn-primary", onclick="addOne()">Add</button>
     </div>
+    <script>
+        function addOne() {
+            $('table.table-sm').bootstrapTable('selectPage', 1); //Jump to the first page  
+            var data = {'ii': '', 'aa': ''}; //define a new row data，certainly it's empty  
+    
+            $('table.table-sm').bootstrapTable('prepend', data);
+            //$('#dataTable').bootstrapTable('append',data);  
+    
+            $("#dataTable tr:eq(1) td:eq(0)").trigger("dblclick");  
+            $("#dataTable input")[0].focus();  
+        }
+    </script>
 {{ end }}

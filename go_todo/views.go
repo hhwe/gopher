@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"reflect"
 	"strconv"
 	"time"
 )
@@ -15,7 +16,7 @@ func init() {
 	http.HandleFunc("/get", getHandler)
 	http.HandleFunc("/post", postHandler)
 	http.HandleFunc("/edit", editHandler)
-	http.HandleFunc("/delte", deleteHandler)
+	http.HandleFunc("/delete/", deleteHandler)
 
 	http.Handle("/templates/", http.StripPrefix("/templates/",
 		http.FileServer(http.Dir("./templates"))))
@@ -83,10 +84,8 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(r.FormValue("id"), 10, 10)
-	if err != nil {
-		log.Panic(err)
-	}
+	id := string(r.URL.Path[len("/delete/")])
+	fmt.Println(id, reflect.TypeOf(id))
 
 	stmt, err := db.Prepare("delete from todo where id=?")
 	if err != nil {
