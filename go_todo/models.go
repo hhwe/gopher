@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-redis/redis"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -15,8 +17,9 @@ type todo struct {
 }
 
 var db, err = sql.Open("mysql", "root:root@/todo?charset=utf8")
+var rd = redis.NewClient(&redis.Options{DB: 0})
 
-func get_all(query *sql.Rows) []map[string]string {
+func getAll(query *sql.Rows) []map[string]string {
 	column, _ := query.Columns()
 	values := make([][]byte, len(column))
 	scans := make([]interface{}, len(column))

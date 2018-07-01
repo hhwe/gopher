@@ -5,15 +5,20 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 func init() {
-	http.HandleFunc("/", indexHandle)
+	http.HandleFunc("/", indexHandler)
 
-	http.HandleFunc("/get", getHandle)
-	http.HandleFunc("/post", postHandle)
-	http.HandleFunc("/add", addHandle)
+	http.HandleFunc("/get", getHandler)
+	http.HandleFunc("/post", postHandler)
+	http.HandleFunc("/edit", editHandler)
+	http.HandleFunc("/delte", deleteHandler)
+
+	http.Handle("/templates/", http.StripPrefix("/templates/",
+		http.FileServer(http.Dir("./templates"))))
 }
 
 // var templates = template.Must(template.ParseFiles("index.html"))
@@ -26,7 +31,7 @@ func init() {
 // 	}
 // }
 
-func indexHandle(w http.ResponseWriter, r *http.Request) {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	// renderTemplate(w, "index")
 
@@ -34,27 +39,33 @@ func indexHandle(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, nil)
 }
 
-func getHandle(w http.ResponseWriter, r *http.Request) {
+func getHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query("select * from todo;")
 	if err != nil {
 		log.Panic(err)
 	}
 
-	list := get_all(rows)
+	list := getAll(rows)
 
 	t, _ := template.ParseFiles("templates/get.html")
 	t.Execute(w, list)
 }
 
-func addHandle(w http.ResponseWriter, r *http.Request) {
+func editHandler(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("templates/post.html")
 	t.Execute(w, nil)
 }
 
-func postHandle(w http.ResponseWriter, r *http.Request) {
+func postHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
-	finished := r.FormValue("finished")
-	fmt.Println(title, finished)
+	if title == "" {
+		http.Error(w, "title is needed", http.StatusInternalServerError)
+		return
+	}
+	finished, err := strconv.ParseBool(r.FormValue("finished"))
+	if err != nil {
+		log.Panic(err)
+	}
 	stmt, err := db.Prepare("INSERT todo SET title=?,finished=?,created=?")
 	if err != nil {
 		log.Panic(err)
@@ -71,7 +82,27 @@ func postHandle(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/get", http.StatusFound)
 }
 
-type SignInResponse struct {
-	UserID       string `json:"user_id"`
-	SessionToken string `json:"session_token"`
+func deleteHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(r.FormValue("id"), 10, 10)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	stmt, err := db.Prepare("delete from todo where id=?")
+	if err != nil {
+		log.Panic(err)
+	}
+
+	res, err := stmt.Exec(id)
+	if err != nil {
+		log.Panic(err)
+	}
+	fmt.Println(res.LastInsertId())
+
+	http.Redirect(w, r, "/get", http.StatusFound)
 }
+
+// type SignInResponse struct {
+// 	UserID       string `json:"user_id"`
+// 	SessionToken string `json:"session_token"`
+// }
