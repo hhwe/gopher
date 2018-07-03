@@ -15,9 +15,15 @@ type notint int
 var i notint = 9
 var j = notint(2)
 
+type duration int64
+
 
 
 func main() {
+	var dur duration
+	dur = duration(int64(1000))
+	fmt.Println(dur)
+
 
 	fmt.Println(cc())
 	fmt.Println(dd())
