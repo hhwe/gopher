@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 	"fmt"
+	"os"
 )
 
 //var p map[string]int
@@ -17,13 +18,37 @@ var j = notint(2)
 
 type duration int64
 
+func pc() {
+	fmt.Println("pc")
+	defer func() {
+		fmt.Println("defer")
+		defer func() {
+			fmt.Println("defer in")
+		}()
+	}()
+	panic("890")
 
+	defer func() {
+		fmt.Println("defer out")
+	}()
+}
 
 func main() {
 	var dur duration
 	dur = duration(int64(1000))
 	fmt.Println(dur)
 
+	defer func() {
+		if recover() != nil {
+			fmt.Println("recover be")
+		}
+	}()
+
+	pc()
+
+	os.Open("i.go")
+
+	panic("123")
 
 	fmt.Println(cc())
 	fmt.Println(dd())
