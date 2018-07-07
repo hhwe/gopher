@@ -2,6 +2,7 @@
 package main
 import (
 	"fmt"
+	"reflect"
 )
 
 // notifier 是一个定义了
@@ -47,8 +48,6 @@ func main(){
 
 	var d = duration1(42)
 	fmt.Println(d.pretty())
-	// ./listing46.go:17: 不能通过指针调用 duration(42)的方法
-	// ./listing46.go:17: 不能获取 duration(42)的地址
 
 	// 创建一个 users 类型的值,并发送通知
 	u := users{"Bill", "bill@email.com"}
@@ -59,9 +58,27 @@ func main(){
 	var n notifier
 	n = &users{"Jack", "jack@email.com"}
 	fmt.Println(n)
-	// ./listing36.go:32: 不能将 u(类型是 users)作为
-	// sendNotification 的参数类型 notifier:
-	// users 类型并没有实现 notifier
-	// (notify 方法使用指针接收者声明)
+
+
+	var i int = 64
+	t := reflect.TypeOf(i)    //得到类型的元数据,通过t我们能获取类型定义里面的所有元素
+	v := reflect.ValueOf(i)   //得到实际的值，通过v我们获取存储在里面的值，还可以去改变值
+	tag := t.Elem().Field(0).Tag  //获取定义在struct里面的标签
+	name := v.Elem().Field(0).String()  //获取存储在第一个字段里面的值
+	fmt.Println(tag, name)
+
+
+	//var x float64 = 3.4
+	//v := reflect.ValueOf(x)
+	//
+	//fmt.Println("type:", v.Type())
+	//fmt.Println("kind is float64:", v.Kind() == reflect.Float64)
+	//fmt.Println("value:", v.Float())
+	//
+	//v = reflect.ValueOf(x)
+	//v.SetFloat(7.1)
+	//fmt.Println("type:", v.Type())
+	//fmt.Println("kind is float64:", v.Kind() == reflect.Float64)
+	//fmt.Println("value:", v.Float())
 }
 
