@@ -4,13 +4,14 @@ package main
 
 import (
 	"fmt"
-	"runtime"
 	"sync"
+	"sync/atomic"
+	"runtime"
 )
 
 // wg 用来等待程序完成
 var wg sync.WaitGroup
-var counter = 1
+var counter int64
 
 // main 是所有 Go 程序的入口
 func main() {
@@ -40,14 +41,17 @@ func incCounter(id int) {
 	// 在函数退出时调用 Done 来通知 main 函数工作已经完成
 	defer wg.Done()
 	for count := 0; count < 2; count++ {
-		// 捕获 counter 的值
-		value := counter
-		// 当前 goroutine 从线程退出,并放回到队列
+		//// 捕获 counter 的值
+		//value := counter
+		//// 当前 goroutine 从线程退出,并放回到队列
+		//runtime.Gosched()
+		//// 增加本地 value 变量的值
+		//value++
+		//// 将该值保存回 counter
+		//counter = value
+
+		atomic.AddInt64(&counter, 1)
 		runtime.Gosched()
-		// 增加本地 value 变量的值
-		value++
-		// 将该值保存回 counter
-		counter = value
 	}
 }
 // printPrime 显示 5000 以内的素数值
