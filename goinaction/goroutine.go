@@ -4,9 +4,9 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"sync"
 	"sync/atomic"
-	"runtime"
 )
 
 // wg 用来等待程序完成
@@ -36,6 +36,7 @@ func main() {
 	wg.Wait()
 	fmt.Println("Final Counter:", counter)
 }
+
 // incCounter 增加包里 counter 变量的值
 func incCounter(id int) {
 	// 在函数退出时调用 Done 来通知 main 函数工作已经完成
@@ -54,6 +55,7 @@ func incCounter(id int) {
 		runtime.Gosched()
 	}
 }
+
 // printPrime 显示 5000 以内的素数值
 func printPrime(prefix string) {
 	// 在函数退出时调用 Done 来通知 main 函数工作已经完成

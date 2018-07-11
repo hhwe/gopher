@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
 	n := make(chan int)
@@ -23,6 +26,23 @@ func main() {
 	//
 	//t := <- c
 
+	close(n)
+	close(c)
 
 
+	d := make(chan int)
+	o := make(chan bool)
+	go func() {
+		for {
+			select {
+			case v := <- d:
+				println(v)
+			case <- time.After(5 * time.Second):
+				println("timeout")
+				o <- true
+				break
+			}
+		}
+	}()
+	<- o
 }

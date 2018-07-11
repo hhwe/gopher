@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	numberGoroutines = 4 // 要使用的 goroutine 的数量
-	taskLoad = 10 // 要处理的工作的数量
+	numberGoroutines = 4  // 要使用的 goroutine 的数量
+	taskLoad         = 10 // 要处理的工作的数量
 )
 
 // wg 用来等待程序结束

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"reflect"
 	"fmt"
+	"reflect"
 )
 
 func main() {
@@ -10,7 +10,6 @@ func main() {
 	var a interface{}
 	a = 6
 	fmt.Println(reflect.TypeOf(a), reflect.ValueOf(a))
-
 
 	// todo: 1.Reflection goes from interface value to reflection object.
 	// At the basic level, reflection is just a mechanism to examine the type
@@ -33,7 +32,7 @@ func main() {
 	fmt.Println("type:", v.Type())                            // uint8.
 	fmt.Println("kind is uint8: ", v.Kind() == reflect.Uint8) // true.
 	//y = v.Uint() 反射返回的是对应类型的极限类型，如：int返回的是int64
-	y = uint8(v.Uint())                                       // v.Uint returns a uint64.
+	y = uint8(v.Uint()) // v.Uint returns a uint64.
 
 	type MyInt int
 	var z MyInt = 7
@@ -44,14 +43,13 @@ func main() {
 
 	type man struct {
 		name string
-		age int
+		age  int
 	}
 	m := new(man)
 	v = reflect.ValueOf(m)
 	fmt.Println("type:", v.Type())
 	fmt.Println("kind is Struct:", v.Kind() == reflect.Interface)
 	//fmt.Println("value:", v.Int())
-
 
 	// todo: 2. Reflection goes from reflection object to interface value.
 	// Like physical reflection, reflection in Go generates its own inverse.
@@ -64,7 +62,6 @@ func main() {
 	fmt.Println(r)
 	//fmt.Println(v) it's ok but not we want the concrete value it holds
 	fmt.Println(v.Interface())
-
 
 	// todo: 3. To modify a reflection object, the value must be settable.
 	// The third law is the most subtle and confusing, but it's easy enough to
@@ -84,7 +81,7 @@ func main() {
 	fmt.Println("settability of v:", v.CanSet())
 
 	var g float64 = 3.4
-	p := reflect.ValueOf(&g)  // Note: take the address of x.
+	p := reflect.ValueOf(&g) // Note: take the address of x.
 	fmt.Println("type of p:", p.Type())
 	fmt.Println("settability of p:", p.CanSet())
 	// To get to what p points to, we call the Elem method of Value
@@ -93,8 +90,6 @@ func main() {
 	v.SetFloat(7.1)
 	fmt.Println(v.Interface())
 	fmt.Println(g)
-
-
 
 	// fixme: Structs
 	// In our previous example v wasn't a pointer itself, it was just derived from one. A common way for this situation to arise is when using reflection to modify the fields of a structure. As long as we have the address of the structure, we can modify its fields.
