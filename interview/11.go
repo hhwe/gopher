@@ -27,7 +27,6 @@ func main() {
 	var l map[string]int
 	fmt.Println(l)
 
-
 	fmt.Println(live())
 	if live() == nil {
 		fmt.Println("AAAAAAA")

@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"runtime"
 	"sync"
-	"fmt"
 )
 
 func main() {

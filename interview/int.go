@@ -1,6 +1,7 @@
 // 这个示例程序展示如何声明
 // 并使用方法
 package main
+
 import (
 	"fmt"
 	"time"
@@ -8,11 +9,9 @@ import (
 
 // user 在程序里定义一个用户类型
 type user struct {
-	name string
+	name  string
 	email string
 }
-
-
 
 // notify 使用值接收者实现了一个方法
 func (u user) notify() {
@@ -35,21 +34,21 @@ func concat(s, t *string) {
 }
 
 func isArr(arr [5]int) {
-	fmt.Printf("after: %d  %p \n",arr, &arr)
+	fmt.Printf("after: %d  %p \n", arr, &arr)
 	arr[0] = 500
-	fmt.Printf("change: %d  %p \n",arr, &arr)
+	fmt.Printf("change: %d  %p \n", arr, &arr)
 }
 
 func isSlice(arr []int) {
 	// 传递的时候还是通过复制标头数据的形式, 只不过标头本身带有指向底层数据的指针
-	fmt.Printf("after: %d  %p \n",arr, &arr)
+	fmt.Printf("after: %d  %p \n", arr, &arr)
 	arr[0] = 500
-	fmt.Printf("change: %d  %p \n",arr, &arr)
+	fmt.Printf("change: %d  %p \n", arr, &arr)
 }
 
 type IP []int
 
-func (ip IP) MarshalText(){
+func (ip IP) MarshalText() {
 	ip[0] = 10
 }
 
@@ -66,7 +65,7 @@ func main() {
 	fmt.Println(s, t)
 
 	var arr = [5]int{1, 2, 3, 4, 5}
-	fmt.Printf("before: %d  %p \n",arr, &arr)
+	fmt.Printf("before: %d  %p \n", arr, &arr)
 	isArr(arr)
 	fmt.Println(arr)
 
@@ -78,10 +77,9 @@ func main() {
 	// 在传递的时候也是本质上也是传递值, 只不过不是数据本身的底层结构,
 	// 而是标头(底层结构的引用, 具有指向底层结构的指针)
 	var sli = []int{1, 2, 3, 4, 5}
-	fmt.Printf("before: %d  %p \n",sli, &sli)
+	fmt.Printf("before: %d  %p \n", sli, &sli)
 	isSlice(sli)
 	fmt.Println(sli)
-
 
 	var ip IP = []int{1, 2, 3, 4, 5}
 	ip.MarshalText()
@@ -104,7 +102,6 @@ func main() {
 	// 使用指针接收者声明的方法
 	lisa.changeEmail("lisa@newdomain.com")
 	lisa.notify()
-
 
 	fmt.Println(time.Time{})
 	fmt.Println(time.Now())

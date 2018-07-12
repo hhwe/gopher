@@ -1,13 +1,15 @@
 // 这个示例程序展示如何使用 io.Reader 和 io.Writer 接口
 // 写一个简单版本的 curl 程序
 package main
+
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
-	"bytes"
 )
+
 // init 在 main 函数之前调用
 func init() {
 	if len(os.Args) != 2 {
@@ -15,6 +17,7 @@ func init() {
 		os.Exit(-1)
 	}
 }
+
 // main 是应用程序的入口
 func main() {
 	// 从 Web 服务器得到响应

@@ -3,10 +3,10 @@
 package main
 
 import (
+	"gopher/goinaction/work"
 	"log"
 	"sync"
 	"time"
-	"gopher/goinaction/work"
 )
 
 // names 提供了一组用来显示的名字

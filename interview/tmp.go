@@ -1,18 +1,20 @@
 package main
 
 import (
-	"time"
 	"fmt"
 	"os"
+	"time"
 )
 
 //var p map[string]int
 
 type clockFun func() time.Time
+
 var cc clockFun = time.Now
 var dd = clockFun(time.Now)
 
 type notint int
+
 var i notint = 9
 var j = notint(2)
 
@@ -95,9 +97,9 @@ func main() {
 
 	// 创建一个映射,存储颜色以及颜色对应的十六进制代码
 	colors := map[string]string{
-		"AliceBlue": "#f0f8ff",
-		"Coral": "#ff7F50",
-		"DarkGray": "#a9a9a9",
+		"AliceBlue":   "#f0f8ff",
+		"Coral":       "#ff7F50",
+		"DarkGray":    "#a9a9a9",
 		"ForestGreen": "#228b22",
 	}
 	// 显示映射里的所有颜色
