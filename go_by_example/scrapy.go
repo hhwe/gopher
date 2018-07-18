@@ -44,15 +44,9 @@ func crawl(url string) {
 		for i, article := range r {
 			titleRegExp := regexp.MustCompile(`(?Ums)<a href="(.*)" target="_blank" title="(?P<title>.*)">.*<span class="view" title="阅读数">.*<span>(?P<vote>.*)</span>`)
 			t := titleRegExp.FindStringSubmatch(article)
-			// <span class="view" title="阅读数">
-			// <i class="glyphicon glyphicon-eye-open"></i>
-			// 	阅读:<span>206</span>次
-			// </span>
 			for j, p := range t {
 				fmt.Println(i, j, p)
 			}
-			// fmt.Println(i, t)
-			// fmt.Printf("$title", s)
 		}
 	}
 
