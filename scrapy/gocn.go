@@ -121,7 +121,7 @@ func GetHref(atag string) (href, content string) {
 	return href, content
 }
 
-func crawl(url string, urlChannel chan string) {
+func scrapy(url string, urlChannel chan string) {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Println("[E]", r)
