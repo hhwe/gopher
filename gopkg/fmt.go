@@ -32,10 +32,13 @@ func main() {
 	var sa string
 	var ia int64
 	fmt.Scan(&sa, &ia)
-	fmt.Printf("%s %d", sa, ia)
+	fmt.Printf("%s %d\n", sa, ia)
+
+	p := fmt.Sprintf("%d", ia)
+	fmt.Println(p)
 
 	fmt.Sscan(sa, ia)
-
+	fmt.Println(sa, ia)
 	fmt.Errorf("error", sa, ia)
 	// w := ""
 	// fmt.Fprint(w, "123")
