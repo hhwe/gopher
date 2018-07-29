@@ -48,4 +48,20 @@ func main() {
 	fmt.Println(strconv.FormatFloat(123.456, 'b', 10, 64))
 
 	fmt.Println(strconv.IntSize)
+
+	fmt.Println(multi(2))
+}
+
+func multi(b int) int {
+	if a := 1; a == 0 {
+		fmt.Println(a)
+	} else {
+		fmt.Println(a)
+	}
+	// fmt.Println(a) // a只是作用在if语句块中, 是一个块作用域
+
+	if b != 0 {
+		return 110
+	}
+	return 999
 }

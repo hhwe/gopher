@@ -28,6 +28,9 @@ func main() {
 	fmt.Println(t.Format("02 Jan 2006 15:00"))
 	fmt.Println(t.Format(time.ANSIC), t.Format(time.RFC822), t.Format("20060101"))
 
+	then := time.Date(2009, 11, 17, 20, 34, 58, 651387237, time.UTC)
+	fmt.Print(then)
+
 	end := time.Now()
 	elapse := end.Sub(start)
 	deadline := time.Time{}
@@ -54,4 +57,12 @@ func main() {
 		<-ticker
 		fmt.Println(i)
 	}
+
+	// var pt *int = nil
+	// *pt = 0 // 错误的使用空指针
+
+	// if true {
+	// 	return 1	// 多个return
+	// }
+	// return 2
 }
