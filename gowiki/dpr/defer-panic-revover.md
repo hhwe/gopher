@@ -1,4 +1,4 @@
-[Defer, Panic, and Recover](https://blog.golang.org/defer-panic-and-recover)
+# [Defer, Panic, and Recover](https://blog.golang.org/defer-panic-and-recover)
 
 4 August 2010
 
