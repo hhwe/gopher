@@ -107,6 +107,11 @@ func sliceFunc() {
 	out()
 
 	fmt.Println(ext(sli, 5))
+
+	var pli = []int{1, 2, 3, 4, 5, 6, 7}
+	fmt.Println(fileter(pli, odoo))
+
+	fmt.Println(InsertStringSlice(pli, sli, 2))
 }
 
 func sh(a ...int) {
@@ -184,4 +189,41 @@ func ext(sli []int, fac int) []int {
 	newSli := make([]int, l)
 	copy(newSli, sli)
 	return newSli
+}
+
+func fileter(s []int, fn func(int) bool) []int {
+	var newSli []int
+
+	for _, i := range s {
+		if len(newSli) > 10 {
+			break
+		}
+		if fn(i) {
+			newSli = append(newSli, i)
+		}
+	}
+	return newSli
+}
+
+func odoo(a int) bool {
+	if a%2 == 0 {
+		return true
+	}
+	return false
+}
+
+func InsertStringSlice(src, des []int, n int) []int {
+	ll := len(des) + len(src)
+	result := make([]int, ll)
+	copy(result, des[:n])
+	copy(result[n:], src[:])
+	copy(result[len(src)+n:], des[n:])
+	return result
+}
+
+func RemoveStringSlice(sli []int, start, end int) []int {
+	result := make([]int, len(sli)-end+start)
+	copy(result, des[:start])
+	copy(result[start:], src[end:])
+	return result
 }
