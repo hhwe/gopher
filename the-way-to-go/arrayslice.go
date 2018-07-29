@@ -32,7 +32,7 @@ func main() {
 	var buf bytes.Buffer
 	fmt.Println(buf.Bytes())
 
-	itemIter()
+	sliceFunc()
 }
 
 func arrayValue() {
@@ -84,7 +84,7 @@ func sAppend(slice, data []byte) []byte {
 	return slice
 }
 
-func itemIter() {
+func sliceFunc() {
 	items := [...]int{10, 20, 30, 40, 50}
 	for _, item := range items {
 		item *= 2
@@ -103,6 +103,10 @@ func itemIter() {
 	sumAndAverage(sli)
 	minSlice(sli)
 	maxSlice(sli)
+
+	out()
+
+	fmt.Println(ext(sli, 5))
 }
 
 func sh(a ...int) {
@@ -160,4 +164,24 @@ func maxSlice(sli []int) int {
 	}
 	fmt.Println(max)
 	return max
+}
+
+func out() {
+	arr := [5]int{10, 20, 30, 40, 50}
+	sli := arr[:]
+	p := append(sli, 2, 3, 4, 5)
+	sli[3] = 100
+	p[1] = 200
+	fmt.Println(arr, sli, p)
+}
+
+func ext(sli []int, fac int) []int {
+	l := len(sli) * fac
+	if cap(sli) > l {
+		o := make([]int, l-len(sli))
+		return append(sli, o...)
+	}
+	newSli := make([]int, l)
+	copy(newSli, sli)
+	return newSli
 }
