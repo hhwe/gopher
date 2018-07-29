@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"unsafe"
 )
 
 func main() {
@@ -33,6 +34,8 @@ func main() {
 	fmt.Println(buf.Bytes())
 
 	sliceFunc()
+
+	strSlice()
 }
 
 func arrayValue() {
@@ -223,7 +226,49 @@ func InsertStringSlice(src, des []int, n int) []int {
 
 func RemoveStringSlice(sli []int, start, end int) []int {
 	result := make([]int, len(sli)-end+start)
-	copy(result, des[:start])
-	copy(result[start:], src[end:])
+	copy(result, sli[:start])
+	copy(result[start:], sli[end:])
 	return result
 }
+
+func strSlice() {
+	// s := "\u00ff\u754c"
+	// s := "hello world"
+	s := "你好 世界"
+	for i, c := range s {
+		fmt.Printf("%d:%c ", i, c)
+	}
+	var b []byte
+	b = append(b, s...)
+	fmt.Println(b)
+	fmt.Println(s[:2])
+
+	fmt.Println(strSplit(s, 4))
+
+	fmt.Println(strRevese("google"))
+	str := "google谷歌"
+	fmt.Println(len(str))
+	for i, p := range str {
+		fmt.Println(i, p)
+	}
+}
+
+func strSplit(str string, i int) (string, string) {
+	fmt.Println(str[len(str)/2:] + str[:len(str)/2])
+	return str[:i], str[i:]
+}
+
+func strRevese(str string) string {
+	// b := make([]rune, len(str))
+	fmt.Println(unsafe.Sizeof(str)) //15
+	b := []rune(str)                // 将utf-8转化为unicode
+	fmt.Println(unsafe.Sizeof(b))   //20
+	for i := 0; i < len(b)/2; i++ {
+		b[i], b[len(b)-i-1] = b[len(b)-1-i], b[i]
+	}
+	return string(b)
+}
+
+// func strDiff(src, des string) []rune {
+
+// }

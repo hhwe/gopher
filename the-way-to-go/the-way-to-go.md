@@ -73,3 +73,38 @@ new() 和 make() 的区别
 
     new(T) 为每个新的类型T分配一片内存，初始化为 0 并且返回类型为*T的内存地址：这种方法 返回一个指向类型为 T，值为 0 的地址的指针，它适用于值类型如数组和结构体（参见第 10 章）；它相当于 &T{}。
     make(T) 返回一个类型为 T 的初始值，它只适用于3种内建的引用类型：切片、map 和 channel（参见第 8 章，第 13 章）。
+
+切片和垃圾回收
+
+    切片的底层指向一个数组，该数组的实际容量可能要大于切片所定义的容量。只有在没有任何切片指向的时候，底层的数组内存才会被释放，这种特性有时会导致程序占用多余的内存。
+
+    示例 函数 FindDigits 将一个文件加载到内存，然后搜索其中所有的数字并返回一个切片。
+
+    var digitRegexp = regexp.MustCompile("[0-9]+")
+
+    func FindDigits(filename string) []byte {
+        b, _ := ioutil.ReadFile(filename)
+        return digitRegexp.Find(b)
+    }
+    这段代码可以顺利运行，但返回的 []byte 指向的底层是整个文件的数据。只要该返回的切片不被释放，垃圾回收器就不能释放整个文件所占用的内存。换句话说，一点点有用的数据却占用了整个文件的内存。
+
+    想要避免这个问题，可以通过拷贝我们需要的部分到一个新的切片中：
+
+    func FindDigits(filename string) []byte {
+    b, _ := ioutil.ReadFile(filename)
+    b = digitRegexp.Find(b)
+    c := make([]byte, len(b))
+    copy(c, b)
+    return c
+    }
+    事实上，上面这段代码只能找到第一个匹配正则表达式的数字串。要想找到所有的数字，可以尝试下面这段代码：
+
+    func FindFileDigits(filename string) []byte {
+    fileBytes, _ := ioutil.ReadFile(filename)
+    b := digitRegexp.FindAll(fileBytes, len(fileBytes))
+    c := make([]byte, 0)
+    for _, bytes := range b {
+        c = append(c, bytes...)
+    }
+    return c
+    }
