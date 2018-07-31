@@ -3,6 +3,8 @@ package main
 import (
 	"container/list"
 	"fmt"
+	"math"
+	"math/big"
 	"regexp"
 	"strconv"
 	"sync"
@@ -15,6 +17,7 @@ func main() {
 	regexExp()
 
 	async()
+	bigMath()
 }
 
 func doubleLinkList() {
@@ -67,29 +70,69 @@ func regexExp() {
 }
 
 type muxMap struct {
-	mu sync.RWMutex
+	sync.RWMutex
 	mp map[string]int
 }
 
 func async() {
 	var wg sync.WaitGroup
-	wg.Add(1)
+	var g = 20
+	wg.Add(g)
 	m := map[string]int{
 		"alpha": 34, "bravo": 56, "charlie": 23,
 		"delta": 87, "echo": 56, "foxtrot": 12,
 		"golf": 34, "hotel": 16, "indio": 87,
 		"juliet": 65, "kili": 43, "lima": 98,
 	}
-	go changeMap(m, wg)
+	for i := 0; i < g/2; i++ {
+		go changeMap(m, &wg)
+	}
+	mu := muxMap{mp: m}
+	for i := 0; i < g/2; i++ {
+		go changeMutexMap(&mu, &wg)
+	}
 	wg.Wait()
 }
 
-func changeMap(m map[string]int, wg sync.WaitGroup) {
+func changeMap(m map[string]int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	fmt.Println("======")
 	for k, v := range m {
 		v += 10
-		fmt.Println(k, v)
+		fmt.Printf("%s, %d;", k, v)
 	}
+	fmt.Println()
 	fmt.Println("======")
+}
+
+func changeMutexMap(m *muxMap, wg *sync.WaitGroup) {
+	defer wg.Done()
+	m.Lock()
+	defer m.Unlock()
+	fmt.Println("======")
+	for k, v := range m.mp {
+		v += 10
+		fmt.Printf("%s, %d;", k, v)
+	}
+	fmt.Println()
+	fmt.Println("======")
+}
+
+func bigMath() {
+	// Here are some calculations with bigInts:
+	fmt.Println(math.MaxInt8)
+	im := big.NewInt(math.MaxInt64)
+	in := im
+	io := big.NewInt(1956)
+	ip := big.NewInt(1)
+	ip.Mul(im, in).Add(ip, im).Div(ip, io)
+	fmt.Printf("Big Int: %v\n", ip)
+	// Here are some calculations with bigInts:
+	rm := big.NewRat(math.MaxInt64, 1956)
+	rn := big.NewRat(-1956, math.MaxInt64)
+	ro := big.NewRat(19, 56)
+	rp := big.NewRat(1111, 2222)
+	rq := big.NewRat(1, 1)
+	rq.Mul(rm, rn).Add(rq, ro).Mul(rq, rp)
+	fmt.Printf("Big Rat: %v\n", rq)
 }
