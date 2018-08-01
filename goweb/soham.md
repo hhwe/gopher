@@ -31,15 +31,15 @@ This application will require three components :
 
 Run this command to check the current value of your `$GOPATH` environment variable :
 
-```
+``` go 
 echo $GOPATH
 ```
 
 If you do not see a directory name, add the `GOPATH` variable to your environment (you can select any directory location you want, but it would be better if you create a new directory for this) :
 
-```
+``` go 
 export GOPATH="/location/of/your/gopath/directory"
-```
+``` 
 
 You can paste the above line in you `.bashrc` or `.zshrc` file, in case you wish to make the variable permanent.
 
@@ -47,7 +47,7 @@ You can paste the above line in you `.bashrc` or `.zshrc` file, in case you 
 
 Hereafter, the “Go directory” will refer to the location described by your `$GOPATH` environment variable. Inside the Go directory, you will have to create 3 folders (if they are not there already) :
 
-```
+``` go 
 # Inside the Go directory
 mkdir src
 mkdir pkg
@@ -72,13 +72,13 @@ This location on your computer will henceforth be referred to as your “project
 
 Inside your project directory, create a file called `main.go` inside your project directory :
 
-```
+``` go 
 touch main.go
 ```
 
 This file will contain the code to start your server :
 
-```
+``` go 
 // This is the name of our package
 // Everything with this package name can see everything
 // else inside the same package, regardless of the file they are in
@@ -117,15 +117,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 You can now run this file :
 
-```
+``` go 
 go run main.go
-```
+``` 
 
 And navigate to [http://localhost:8080](http://localhost:8080/) in your browser, or by running the command :
 
-```
+``` go 
 curl localhost:8080
-```
+``` 
 
 And see the output: “Hello World!”
 
@@ -135,7 +135,7 @@ You have now successfully started an HTTP server in Go.
 
 Our server is now running, but, you might notice that we get the same “Hello World!” response *regardless of the route we hit, or the HTTP method that we use*. To see this yourself, run the following `curl` commands, and observe the response that the server gives you :
 
-```
+``` go 
 curl localhost:8080/some-other-route
 curl -X POST localhost:8080
 curl -X PUT localhost:8080/samething
@@ -160,7 +160,7 @@ In order to do this, we use a “package manager” tool. This tool serves a few
 
 The official package manager for Go (or rather “official experiment” that is “safe for production use” as described on its homepage) is called `dep`. You can install dep by following the [setup guide](https://github.com/golang/dep#setup). You can verify its installation by running :
 
-```
+``` go 
 dep version
 ```
 
@@ -168,15 +168,15 @@ which should output some information on the version if successful.
 
 To initialize package management for our project, run the command :
 
-```
+``` go 
 dep init
-```
+``` 
 
 THis will create the `Gopkg.toml` and `Gopkg.lock` files, which are the files that are used to record and lock dependencies in our project.
 
 Next, we install our routing library:
 
-```
+``` go 
 dep ensure -add github.com/gorilla/mux
 ```
 
@@ -184,7 +184,7 @@ This will add the [`gorilla/mux`](https://github.com/gorilla/mux) library to y
 
 Now, we can modify our code to make use of the functionality that this library provides :
 
-```
+``` go 
 package main
 
 import (
@@ -219,7 +219,7 @@ Testing is an essential part of making any application “production quality”.
 
 Lets start by testing our handler. Create a file called `main_test.go`:
 
-```
+``` go 
 //main_test.go
 
 package main
@@ -276,9 +276,9 @@ func TestHandler(t *testing.T) {
 
 To run this test, just run :
 
-```
+``` go 
 go test ./...
-```
+``` 
 
 from your project root directory. You should see a mild message telling you that everything ran ok.
 
@@ -292,7 +292,7 @@ In this section, we will test this routing, so that we can be sure that each han
 
 Before we go on to test our routing, it’s necessary to make sure that our code *can* be tested for this. Modify the `main.go` file to look like this:
 
-```
+``` go 
 package main
 
 import (
@@ -325,7 +325,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 Once we’ve separated our route constructor function, let’s test our routing:
 
-```
+``` go 
 func TestRouter(t *testing.T) {
 	// Instantiate the router using the constructor function that
 	// we defined previously
@@ -373,7 +373,7 @@ func TestRouter(t *testing.T) {
 
 Now we know that every time we hit the `GET /hello` route, we get a response of hello world. If we hit any other route, it should respond with a 404\. In fact, let’s write a test for precisely this requirement :
 
-```
+``` go 
 func TestRouterForNonExistentRoute(t *testing.T) {
 	r := newRouter()
 	mockServer := httptest.NewServer(r)
@@ -423,21 +423,21 @@ There are 3 steps we need to take in order to make our server serve these static
 
 To create static assets, create a directory in your project root directory, and name it `assets` :
 
-```
+``` go 
 mkdir assets
 ```
 
 Next, create an HTML file inside this directory. This is the file we are going to serve, along with any other file that goes inside the `assets` directory :
 
-```
+``` go 
 touch assets/index.html
-```
+``` 
 
 ### [](https://www.sohamkamani.com/blog/2017/09/13/how-to-build-a-web-application-in-golang/#modify-the-router)Modify the router
 
 Interestingly enough, the entire file server can be enabled in just adding 3 lines of code in the router. The new router constructor will look like this :
 
-```
+``` go 
 func newRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/hello", handler).Methods("GET")
@@ -464,7 +464,7 @@ func newRouter() *mux.Router {
 
 You cannot truly say that you have completed a feature until you have tests for it. We can test the static file server by adding another test function to `main_test.go` :
 
-```
+``` go 
 func TestStaticFileServer(t *testing.T) {
 	r := newRouter()
 	mockServer := httptest.NewServer(r)
@@ -495,7 +495,7 @@ func TestStaticFileServer(t *testing.T) {
 
 To *actually* test your work, run the server :
 
-```
+``` go 
 go run main.go
 ```
 
@@ -505,7 +505,7 @@ And navigate to [http://localhost:8080/assets/](http://localhost:8080/assets/)�
 
 Since we need to create our bird encyclopedia, lets create a simple HTML document that displays the list of birds, and fetches the list from an API on page load, and also provides a form to update the list of birds :
 
-```
+``` html 
 <!DOCTYPE html>
 <html lang="en">
 
@@ -599,7 +599,7 @@ Create a new file called `bird_handlers.go`, adjacent to the `main.go` file.
 
 First, we will add the definition of the `Bird` struct and initialize a common `bird`variable:
 
-```
+``` go 
 type Bird struct {
 	Species     string `json:"species"`
 	Description string `json:"description"`
@@ -610,7 +610,7 @@ var birds []Bird
 
 Next, define the handler to get all birds :
 
-```
+``` go 
 func getBirdHandler(w http.ResponseWriter, r *http.Request) {
 	//Convert the "birds" variable to json
 	birdListBytes, err := json.Marshal(birds)
@@ -625,11 +625,11 @@ func getBirdHandler(w http.ResponseWriter, r *http.Request) {
 	// If all goes well, write the JSON list of birds to the response
 	w.Write(birdListBytes)
 }
-```
+``` 
 
 Next, the handler to create a new entry of birds :
 
-```
+``` go 
 func createBirdHandler(w http.ResponseWriter, r *http.Request) {
 	// Create a new instance of Bird
 	bird := Bird{}
@@ -661,7 +661,7 @@ func createBirdHandler(w http.ResponseWriter, r *http.Request) {
 
 The last step, is to add these handler to our router, in order to enable them to be used by our application :
 
-```
+``` go 
 	// These lines are added inside the newRouter() function before returning r
 	r.HandleFunc("/bird", getBirdHandler).Methods("GET")
 	r.HandleFunc("/bird", createBirdHandler).Methods("POST")
@@ -684,4 +684,532 @@ You can read about how to integrate a postgres database into your Go application
 
 **_You can find the source code for this post [here]([https://github.com/sohamkamani/blog_example](https://github.com/sohamkamani/blog_example)**go*web*app)___
 
-</article>
+
+# Adding a database to a Go web application 🗄
+
+This post will go through how to add a postgres database into your Go application.
+
+It is not enough to just add a driver and query the database in your code if you want to make your application production ready. There are a few things that you have to take care of:
+
+1.  How would you write tests for your application?
+2.  How will you ensure that everyone else who wants to run the application (including other servers and VMs) are using the same database structure as the one you developed?
+3.  How do you most effectively make use of your computing resources?
+
+First, lets start with adding the database to an existing application.
+
+## [](https://www.sohamkamani.com/blog/2017/10/18/golang-adding-database-to-web-application/#our-application)Our application
+
+I have written another post on setting up a web application in Go. You can read it [here](https://www.sohamkamani.com/blog/2017/09/13/how-to-build-a-web-application-in-golang/), if you want to go into detail. In short, we have an encyclopedia of birds, that we have turned into a web application.
+
+*   A user can make a `POST` call to create a new bird entry
+*   Each entry consists of the *“species”* and *“description”* of the bird.
+*   A user can get existing entries by fetching them through a `GET` call.
+
+The only issue with this existing application, is that the storage is all in memory (stored in data structures within the application code itself) this means that if we restarted the application, all the data would disappear.
+
+Additionally, since all the data is stored in memory, it’s very likely that we would run out of space quickly, since RAM is a much more limited resource as compared to disk space.
+
+Adding a database, would help solve these issues.
+
+## [](https://www.sohamkamani.com/blog/2017/10/18/golang-adding-database-to-web-application/#creating-our-database-tables)Creating our database tables
+
+First, create a database on postgres, and connect to it :
+
+``` sql 
+CREATE DATABASE bird_encyclopedia;
+\c bird_encyclopedia
+```
+
+Based on our application, we can determine the column names and types for our `birds` table:
+
+*   *“species”* which is expected to be a short string of text
+*   *“description”* which is expected to be a longer string of text
+*   *“id”*, which will be an autogenerated integer to keep track of our entries.
+
+Based on this, create a new table using the postgres command line :
+
+``` sql
+CREATE TABLE birds (
+  id SERIAL PRIMARY KEY,
+  bird VARCHAR(256),
+  description VARCHAR(1024)
+);
+```
+
+## [](https://www.sohamkamani.com/blog/2017/10/18/golang-adding-database-to-web-application/#connecting-to-the-database-in-go)Connecting to the database in Go
+
+We are going to structure our application in such a way, that the database will be modeled as a “store” interface within our application.
+
+### [](https://www.sohamkamani.com/blog/2017/10/18/golang-adding-database-to-web-application/#creating-the-store-interface-and-implementation)Creating the store interface, and implementation
+
+Add the file `store.go` to the existing application :
+
+``` go 
+package main
+
+// The sql go library is needed to interact with the database
+import (
+	"database/sql"
+)
+
+// Our store will have two methods, to add a new bird,
+// and to get all existing birds
+// Each method returns an error, in case something goes wrong
+type Store interface {
+	CreateBird(bird *Bird) error
+	GetBirds() ([]*Bird, error)
+}
+
+// The `dbStore` struct will implement the `Store` interface
+// It also takes the sql DB connection object, which represents
+// the database connection.
+type dbStore struct {
+	db *sql.DB
+}
+
+func (store *dbStore) CreateBird(bird *Bird) error {
+	// 'Bird' is a simple struct which has "species" and "description" attributes
+	// THe first underscore means that we don't care about what's returned from
+	// this insert query. We just want to know if it was inserted correctly,
+	// and the error will be populated if it wasn't
+	_, err := store.db.Query("INSERT INTO birds(species, description) VALUES ($1,$2)", bird.Species, bird.Description)
+	return err
+}
+
+func (store *dbStore) GetBirds() ([]*Bird, error) {
+	// Query the database for all birds, and return the result to the
+	// `rows` object
+	rows, err := store.db.Query("SELECT species, description from birds")
+	// We return incase of an error, and defer the closing of the row structure
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Create the data structure that is returned from the function.
+	// By default, this will be an empty array of birds
+	birds := []*Bird{}
+	for rows.Next() {
+		// For each row returned by the table, create a pointer to a bird,
+		bird := &Bird{}
+		// Populate the `Species` and `Description` attributes of the bird,
+		// and return incase of an error
+		if err := rows.Scan(&bird.Species, &bird.Description); err != nil {
+			return nil, err
+		}
+		// Finally, append the result to the returned array, and repeat for
+		// the next row
+		birds = append(birds, bird)
+	}
+	return birds, nil
+}
+
+// The store variable is a package level variable that will be available for
+// use throughout our application code
+var store Store
+
+/*
+We will need to call the InitStore method to initialize the store. This will
+typically be done at the beginning of our application (in this case, when the server starts up)
+This can also be used to set up the store as a mock, which we will be observing
+later on
+*/
+func InitStore(s Store) {
+	store = s
+}
+``` 
+
+There are lots of benefits to creating the store as an interface
+
+*   We can change its implementation at any time without affecting the components that use it
+*   It can be mocked in unit tests that use its implementation.
+
+### [](https://www.sohamkamani.com/blog/2017/10/18/golang-adding-database-to-web-application/#testing-the-store)Testing the store
+
+Before we can use the store in our application, we will have to write tests for it. These will be more like integration tests, since they will test our interaction with the database in the process.
+
+We will also be using a test suite, instead of the usual test functions. This is to make it easier for us to perform one-time setups before some of our tests run. This setup, as is seen in the code mainly entails making and storing the actual database connection, and cleaning up the database before the tests run.
+
+``` go 
+package main
+
+import (
+	"database/sql"
+	"testing"
+
+	// The "testify/suite" package is used to make the test suite
+	"github.com/stretchr/testify/suite"
+)
+
+type StoreSuite struct {
+	suite.Suite
+	/*
+		The suite is defined as a struct, with the store and db as its
+		attributes. Any variables that are to be shared between tests in a
+		suite should be stored as attributes of the suite instance
+	*/
+	store *dbStore
+	db    *sql.DB
+}
+
+func (s *StoreSuite) SetupSuite() {
+	/*
+		The database connection is opened in the setup, and
+		stored as an instance variable,
+		as is the higher level `store`, that wraps the `db`
+	*/
+	connString := "dbname=<your test db name> sslmode=disable"
+	db, err := sql.Open("postgres", connString)
+	if err != nil {
+		s.T().Fatal(err)
+	}
+	s.db = db
+	s.store = &dbStore{db: db}
+}
+
+func (s *StoreSuite) SetupTest() {
+	/*
+		We delete all entries from the table before each test runs, to ensure a
+		consistent state before our tests run. In more complex applications, this
+		is sometimes achieved in the form of migrations
+	*/
+	_, err := s.db.Query("DELETE FROM birds")
+	if err != nil {
+		s.T().Fatal(err)
+	}
+}
+
+func (s *StoreSuite) TearDownSuite() {
+	// Close the connection after all tests in the suite finish
+	s.db.Close()
+}
+
+// This is the actual "test" as seen by Go, which runs the tests defined below
+func TestStoreSuite(t *testing.T) {
+	s := new(StoreSuite)
+	suite.Run(t, s)
+}
+
+func (s *StoreSuite) TestCreateBird() {
+	// Create a bird through the store `CreateBird` method
+	s.store.CreateBird(&Bird{
+		Description: "test description",
+		Species:     "test species",
+	})
+
+	// Query the database for the entry we just created
+	res, err := s.db.Query(`SELECT COUNT(*) FROM birds WHERE description='test description' AND SPECIES='test species'`)
+	if err != nil {
+		s.T().Fatal(err)
+	}
+
+	// Get the count result
+	var count int
+	for res.Next() {
+		err := res.Scan(&count)
+		if err != nil {
+			s.T().Error(err)
+		}
+	}
+
+	// Assert that there must be one entry with the properties of the bird that we just inserted (since the database was empty before this)
+	if count != 1 {
+		s.T().Errorf("incorrect count, wanted 1, got %d", count)
+	}
+}
+
+func (s *StoreSuite) TestGetBird() {
+	// Insert a sample bird into the `birds` table
+	_, err := s.db.Query(`INSERT INTO birds (species, description) VALUES('bird','description')`)
+	if err != nil {
+		s.T().Fatal(err)
+	}
+
+	// Get the list of birds through the stores `GetBirds` method
+	birds, err := s.store.GetBirds()
+	if err != nil {
+		s.T().Fatal(err)
+	}
+
+	// Assert that the count of birds received must be 1
+	nBirds := len(birds)
+	if nBirds != 1 {
+		s.T().Errorf("incorrect count, wanted 1, got %d", nBirds)
+	}
+
+	// Assert that the details of the bird is the same as the one we inserted
+	expectedBird := Bird{"bird", "description"}
+	if *birds[0] != expectedBird {
+		s.T().Errorf("incorrect details, expected %v, got %v", expectedBird, *birds[0])
+	}
+}
+```
+
+One point to note while writing tests that involve the use of a database (or, for that matter, any persistent store), is to always use the most direct mode of access when observing results.
+In the tests above, when testing the `CreateBird` method, we queried the database directly to get the count of entires, instead of using the `GetBirds`method and seeing the length of the resulting slice of birds.
+Similarly, when testing `GetBirds`, we used the `INSERT` query instead of using the `CreateBird` metgod to insert an entry into our table.
+
+This is so that we can isolate the errors in each of our methods, and prevent false positives from occuring, should both the methods fail to run the way we expect them to.
+
+## [](https://www.sohamkamani.com/blog/2017/10/18/golang-adding-database-to-web-application/#adding-the-store-to-our-application)Adding the store to our application
+
+Now that we have created and tested our database store, we can add it to our application. If you have not read the [previous post](https://www.sohamkamani.com/blog/2017/09/13/how-to-build-a-web-application-in-golang/) on creating the handlers, you can see the code [here](https://github.com/sohamkamani/blog_example__go_web_app/blob/master/bird_handlers.go) to know about the earlier implementation. There are very few changes that we actually have to make to our code to implement the store :
+
+``` go 
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
+type Bird struct {
+	Species     string `json:"species"`
+	Description string `json:"description"`
+}
+
+func getBirdHandler(w http.ResponseWriter, r *http.Request) {
+	/*
+		The list of birds is now taken from the store instead of the package level  `birds` variable we had earlier
+
+		The `store` variable is the package level variable that we defined in
+		`store.go`, and is initialized during the initialization phase of the
+		application
+	*/
+	birds, err := store.GetBirds()
+
+	// Everything else is the same as before
+	birdListBytes, err := json.Marshal(birds)
+
+	if err != nil {
+		fmt.Println(fmt.Errorf("Error: %v", err))
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Write(birdListBytes)
+}
+
+func createBirdHandler(w http.ResponseWriter, r *http.Request) {
+	bird := Bird{}
+
+	err := r.ParseForm()
+
+	if err != nil {
+		fmt.Println(fmt.Errorf("Error: %v", err))
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	bird.Species = r.Form.Get("species")
+	bird.Description = r.Form.Get("description")
+
+	// The only change we made here is to use the `CreateBird` method instead of
+	// appending to the `bird` variable like we did earlier
+	err = store.CreateBird(&bird)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	http.Redirect(w, r, "/assets/", http.StatusFound)
+}
+```
+
+## [](https://www.sohamkamani.com/blog/2017/10/18/golang-adding-database-to-web-application/#mocking-the-store)Mocking the store
+
+Using the store in the request handlers was easy, as we just saw. The tricky part comes when you need to test the handlers. It would be unwise use an actual database connection for this :
+
+*   We only want to test that the handler actually *called* the stores `GetBirds` and `CreateBird` methods with the correct arguments.
+*   By using an actual database connection, our tests will not be *unit tests* since they would be implicitly testing the store as well, which would be out of its domain.
+
+One solution to this problem is to use a mock store. The mock store will serve two purposes:
+
+1.  It will pretend to be the actual store. By this I mean that it will accept the same arguments, and return the same type of results as the actual store implementation, without actually interacting with the database
+2.  It will allow us to inspect its method calls. This is important when you want to verify that a method was called, and had the correct arguments.
+
+The mock store is defined in a new file `store_mock.go`:
+
+``` go 
+package main
+
+import (
+	"github.com/stretchr/testify/mock"
+)
+
+// The mock store contains additonal methods for inspection
+type MockStore struct {
+	mock.Mock
+}
+
+func (m *MockStore) CreateBird(bird *Bird) error {
+	/*
+		When this method is called, `m.Called` records the call, and also
+		returns the result that we pass to it (which you will see in the
+		handler tests)
+	*/
+	rets := m.Called(bird)
+	return rets.Error(0)
+}
+
+func (m *MockStore) GetBirds() ([]*Bird, error) {
+	rets := m.Called()
+	/*
+		Since `rets.Get()` is a generic method, that returns whatever we pass to it,
+		we need to typecast it to the type we expect, which in this case is []*Bird
+	*/
+	return rets.Get(0).([]*Bird), rets.Error(1)
+}
+
+func InitMockStore() *MockStore {
+	/*
+		Like the InitStore function we defined earlier, this function
+		also initializes the store variable, but this time, it assigns
+		a new MockStore instance to it, instead of an actual store
+	*/
+	s := new(MockStore)
+	store = s
+	return s
+}
+``` 
+
+Now that we have defined the mock store, we can use it in our tests:
+
+``` go 
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"strconv"
+	"testing"
+)
+
+func TestGetBirdsHandler(t *testing.T) {
+	// Initialize the mock store
+	mockStore := InitMockStore()
+
+	/* Define the data that we want to return when the mocks `GetBirds` method is
+	called
+	Also, we expect it to be called only once
+	*/
+	mockStore.On("GetBirds").Return([]*Bird{
+		{"sparrow", "A small harmless bird"}
+	}, nil).Once()
+
+	req, err := http.NewRequest("GET", "", nil)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+
+	hf := http.HandlerFunc(getBirdHandler)
+
+	// Now, when the handler is called, it should cal our mock store, instead of
+	// the actual one
+	hf.ServeHTTP(recorder, req)
+
+	if status := recorder.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+
+	expected := Bird{"sparrow", "A small harmless bird"}
+	b := []Bird{}
+	err = json.NewDecoder(recorder.Body).Decode(&b)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	actual := b[0]
+
+	if actual != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v", actual, expected)
+	}
+
+	// the expectations that we defined in the `On` method are asserted here
+	mockStore.AssertExpectations(t)
+}
+
+func TestCreateBirdsHandler(t *testing.T) {
+
+	mockStore := InitMockStore()
+	/*
+	 Similarly, we define our expectations for th `CreateBird` method.
+	 We expect the first argument to the method to be the bird struct
+	 defined below, and tell the mock to return a `nil` error
+	*/
+	mockStore.On("CreateBird", &Bird{"eagle", "A bird of prey"}).Return(nil)
+
+	form := newCreateBirdForm()
+	req, err := http.NewRequest("POST", "", bytes.NewBufferString(form.Encode()))
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Length", strconv.Itoa(len(form.Encode())))
+	if err != nil {
+		t.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+
+	hf := http.HandlerFunc(createBirdHandler)
+
+	hf.ServeHTTP(recorder, req)
+
+	if status := recorder.Code; status != http.StatusFound {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	mockStore.AssertExpectations(t)
+}
+
+func newCreateBirdForm() *url.Values {
+	form := url.Values{}
+	form.Set("species", "eagle")
+	form.Set("description", "A bird of prey")
+	return &form
+}
+```
+
+We can visulaize the mock store, and its interaction with the rest of our code :
+
+[图片上传失败...(image-f1331-1533133003005)]
+
+To verify the results, run the tests with `go test`, and they should all run successfully.
+
+## [](https://www.sohamkamani.com/blog/2017/10/18/golang-adding-database-to-web-application/#finishing-touches)Finishing touches
+
+Now that we have tested that our store is working, *and* that our handlers are calling the store correctly, the only thing left to do is add the code for initializing the store on application start up. For this , we will edit the `main.go`file’s `main` function :
+
+``` go 
+import (
+	//...
+	// The libn/pq driver is used for postgres
+	_ "github.com/lib/pq"
+	//...
+)
+
+func main(){
+	// ...
+	connString := "dbname=<your main db name> sslmode=disable"
+	db, err := sql.Open("postgres", connString)
+
+	if err != nil {
+		panic(err)
+	}
+	err = db.Ping()
+
+	if err != nil {
+		panic(err)
+	}
+
+	InitStore(&dbStore{db: db})
+	//...
+}
+```
+
+The source code for this post can be found [here](https://github.com/sohamkamani/blog_example__go_web_db)
+
