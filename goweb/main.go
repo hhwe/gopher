@@ -1,23 +1,25 @@
 package main
 
 import (
-	// Import the gorilla/mux library we just installed
 	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-func main() {
-	// Declare a new router
+// The new router function creates the router and
+// returns it to us. We can now use this function
+// to instantiate and test the router outside of the main function
+func newRouter() *mux.Router {
 	r := mux.NewRouter()
-
-	// This is where the router is useful, it allows us to declare methods that
-	// this path will be valid for
 	r.HandleFunc("/hello", handler).Methods("GET")
+	return r
+}
 
-	// We can then pass our router (after declaring all our routes) to this method
-	// (where previously, we were leaving the secodn argument as nil)
+func main() {
+	// The router is now formed by calling the `newRouter` constructor function
+	// that we defined above. The rest of the code stays the same
+	r := newRouter()
 	http.ListenAndServe(":8080", r)
 }
 
