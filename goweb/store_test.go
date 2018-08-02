@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	// The "testify/suite" package is used to make the test suite
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -25,8 +26,8 @@ func (s *StoreSuite) SetupSuite() {
 		stored as an instance variable,
 		as is the higher level `store`, that wraps the `db`
 	*/
-	connString := "dbname=<your test db name> sslmode=disable"
-	db, err := sql.Open("postgres", connString)
+	connString := "root:root@/bird_encyclopedia?charset=utf8"
+	db, err := sql.Open("mysql", connString)
 	if err != nil {
 		s.T().Fatal(err)
 	}

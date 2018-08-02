@@ -3,6 +3,7 @@ package main
 // The sql go library is needed to interact with the database
 import (
 	"database/sql"
+	"log"
 )
 
 // Our store will have two methods, to add a new bird,
@@ -25,7 +26,13 @@ func (store *dbStore) CreateBird(bird *Bird) error {
 	// THe first underscore means that we don't care about what's returned from
 	// this insert query. We just want to know if it was inserted correctly,
 	// and the error will be populated if it wasn't
-	_, err := store.db.Query("INSERT INTO birds(species, description) VALUES ($1,$2)", bird.Species, bird.Description)
+	stmt, err := store.db.Prepare("INSERT birds (species, description) VALUES (?,?)")
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	_, err = stmt.Exec(bird.Species, bird.Description)
+	// id, err := res.LastInsertId()
 	return err
 }
 

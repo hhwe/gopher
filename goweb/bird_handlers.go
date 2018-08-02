@@ -11,9 +11,18 @@ type Bird struct {
 	Description string `json:"description"`
 }
 
-var birds []Bird
+// var birds []Bird
 
 func getBirdHandler(w http.ResponseWriter, r *http.Request) {
+	/*
+		The list of birds is now taken from the store instead of the package level  `birds` variable we had earlier
+
+		The `store` variable is the package level variable that we defined in
+		`store.go`, and is initialized during the initialization phase of the
+		application
+	*/
+	birds, err := store.GetBirds()
+
 	//Convert the "birds" variable to json
 	birdListBytes, err := json.Marshal(birds)
 
@@ -49,7 +58,13 @@ func createBirdHandler(w http.ResponseWriter, r *http.Request) {
 	bird.Description = r.Form.Get("description")
 
 	// Append our existing list of birds with a new entry
-	birds = append(birds, bird)
+	// birds = append(birds, bird)
+	// The only change we made here is to use the `CreateBird` method instead of
+	// appending to the `bird` variable like we did earlier
+	err = store.CreateBird(&bird)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	//Finally, we redirect the user to the original HTMl page
 	// (located at `/assets/`), using the http libraries `Redirect` method
