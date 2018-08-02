@@ -1,9 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
@@ -11,6 +13,21 @@ import (
 // returns it to us. We can now use this function
 // to instantiate and test the router outside of the main function
 func newRouter() *mux.Router {
+	connString := "root:root@/bird_encyclopedia?charset=utf8"
+	db, err := sql.Open("mysql", connString)
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = db.Ping()
+
+	if err != nil {
+		panic(err)
+	}
+
+	InitStore(&dbStore{db: db})
+
 	r := mux.NewRouter()
 	r.HandleFunc("/hello", handler).Methods("GET")
 
