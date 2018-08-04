@@ -16,12 +16,15 @@ package main
 import (
 	"fmt"
 	"log"
+	"runtime"
 	"strconv"
 )
 
 func main() {
 	integer()
 	printString()
+
+	gc()
 }
 
 type Integer int
@@ -99,29 +102,36 @@ func (tz TZ) String() string {
 }
 
 type stack struct {
-	l [4]int
-	p int
+	l []int
 }
 
 func NewStack() *stack {
-	return &stack{[4]int{}, 0}
+	return &stack{make([]int, 0, 4)}
+}
+
+func (s *stack) String() string {
+	var str string
+	for i, v := range s.l {
+		str = str + "[" + strconv.Itoa(i) + ":" + strconv.Itoa(v) + "]"
+	}
+	return str
 }
 
 func (s *stack) Push(i int) {
-	if len(s.l) >= 4 {
+	if len(s.l) > 3 {
 		log.Fatalln("too long")
 	}
-	s.l[s.p+1] = i
-	s.p++
+	s.l = append(s.l, i)
 }
 
-func (s *stack) Pop(i int) int {
-	if len(s.l) <= 0 {
+func (s *stack) Pop() int {
+	if len(s.l) < 1 {
 		log.Fatalln("too short")
 	}
-	out := s.l[s.p]
-	s.l[s.p] = 0
-	s.p--
+	out := s.l[len(s.l)-1]
+	p := make([]int, len(s.l)-1)
+	copy(p, s.l[:len(s.l)-1])
+	s.l = p
 	return out
 }
 
@@ -142,6 +152,24 @@ func printString() {
 	fmt.Println(tz)
 
 	s := NewStack()
-	// s.Push(12)
+	s.Push(1)
+	s.Push(2)
+	s.Push(3)
+	s.Push(4)
 	fmt.Println(s)
+	fmt.Println(s.Pop())
+	fmt.Println(s)
+	s.Push(5)
+	// s.Push(6)
+	fmt.Println(s)
+	fmt.Println(s.Pop())
+	fmt.Println(s)
+}
+
+func gc() {
+	// fmt.Printf("%d\n", runtime.MemStats.Alloc/1024)
+	// 此处代码在 Go 1.5.1下不再有效，更正为
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	fmt.Printf("%d Kb\n", m.Alloc/1024)
 }
