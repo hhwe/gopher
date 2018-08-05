@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"fmt"
 	"math"
 	"reflect"
@@ -33,6 +34,11 @@ func main() {
 	point()
 	rect()
 	tag()
+	em()
+	person()
+	inheritanceCar()
+
+	magic()
 }
 
 func vcard() {
@@ -81,4 +87,124 @@ func refTag(tt TagType, ix int) {
 	ixField := ttType.Field(ix)
 	fmt.Println(ixField)
 	fmt.Printf("%v %v %v\n", ixField.Tag, ixField.Type, ixField.Index)
+}
+
+type employee struct {
+	salary float64
+}
+
+func (self *employee) giveRaise(p float64) {
+	self.salary = self.salary * (1 + p)
+}
+
+func em() {
+	var p = employee{salary: 1000}
+	fmt.Println(p)
+	p.giveRaise(0.2)
+	fmt.Println(p)
+	ll()
+}
+
+type li list.List
+
+func (p *li) Iter() {
+	fmt.Println(p)
+}
+
+func ll() {
+	lst := new(li)
+	lst.Iter()
+}
+
+type Person struct {
+	firstName string
+	lastName  string
+}
+
+func (p *Person) FirstName() string { // getter
+	return p.firstName
+}
+
+func (p *Person) SetFirstName(newName string) { // setter
+	p.firstName = newName
+}
+
+func person() {
+	p := Person{"韩", "伟"}
+	fmt.Println(p.firstName, p.lastName)
+}
+
+type Engine interface {
+	Start()
+	Stop()
+}
+
+type Car struct {
+	Engine
+	wheelCount int
+}
+
+func (c *Car) numberOfWheels() {
+	fmt.Println(c.wheelCount)
+}
+
+type Mercedes struct {
+	Car
+}
+
+func (m *Mercedes) sayHiToMerkel() {
+	m.numberOfWheels()
+}
+
+func inheritanceCar() {
+	me := Mercedes{Car{wheelCount: 5}}
+	me.sayHiToMerkel()
+}
+
+type Base struct {
+	id int
+}
+
+func (b *Base) GetId() int {
+	return b.id
+}
+
+func (b *Base) SetId(id int) {
+	b.id = id
+}
+
+type Human struct {
+	Base
+	firstName string
+	lastName  string
+}
+
+type Employee struct {
+	Human
+	salary float64
+}
+
+type Base1 struct{}
+
+func (Base1) Magic() {
+	fmt.Println("base magic")
+}
+
+func (self Base1) MoreMagic() {
+	self.Magic()
+	self.Magic()
+}
+
+type Voodoo struct {
+	Base1
+}
+
+func (Voodoo) Magic() {
+	fmt.Println("voodoo magic")
+}
+
+func magic() {
+	v := new(Voodoo)
+	v.Magic()
+	v.MoreMagic()
 }
