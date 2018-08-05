@@ -15,6 +15,16 @@ func ints() {
 	fmt.Printf("The sorted array is: %v\n", a)
 }
 
+func float64s() {
+	data := []float64{74.12, 59, 238, -784, 9845, 959, 905, 0, 0, 42, 7586, -5467984, 7586}
+	a := sort.Float64Array(data) //conversion to type IntArray
+	sort.Sort(a)
+	if !sort.IsSorted(a) {
+		panic("fails")
+	}
+	fmt.Printf("The sorted array is: %v\n", a)
+}
+
 func strings() {
 	data := []string{"monday", "friday", "tuesday", "wednesday", "sunday", "thursday", "", "saturday"}
 	a := sort.StringArray(data)
@@ -59,8 +69,22 @@ func days() {
 	fmt.Printf("\n")
 }
 
+tyep person struct {
+	firstName string
+	lastName string
+}
+type personArrary struct {
+	data []*person
+}
+
+func (p *personArrary) Len() int           { return len(p.data) }
+func (p *personArrary) Less(i, j int) bool { return p.data[i].firstName < p.data[j].firstName }
+func (p *personArrary) Swap(i, j int)      { p.data[i], p.data[j] = p.data[j], p.data[i] }
+
+
 func main() {
 	ints()
+	float64s()
 	strings()
 	days()
 }
