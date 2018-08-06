@@ -1,9 +1,9 @@
 package main
 
 import (
-	"./sort"
 	"fmt"
 	"math"
+	"reflect"
 )
 
 func main() {
@@ -14,7 +14,9 @@ func main() {
 
 	methodset2()
 
-	mainSort()
+	// mainSort()
+
+	reflection()
 }
 
 func simple(s Simpler) {
@@ -44,9 +46,9 @@ type Shaper interface {
 	Area() float32
 }
 
-type PeriInterface interface {
-	Perimeter
-}
+// type PeriInterface interface {
+// 	Perimeter
+// }
 
 type Square struct {
 	side float32
@@ -77,7 +79,7 @@ func (c Circle) Area() float32 {
 }
 
 type Triangle struct {
-	h, l int
+	h, l float32
 }
 
 func (t Triangle) Area() float32 {
@@ -172,4 +174,18 @@ func methodset2() {
 		// VALID: a *List can be dereferenced for the receiver
 		fmt.Printf("- plst is long enough\n")
 	}
+}
+
+type MyInt int
+
+func reflection() {
+	var m MyInt = 5
+	v := reflect.ValueOf(m)
+	fmt.Println(v, v.Int(), v.Type(), v.Kind(), v.CanSet(), v.Interface())
+	var n = 1
+	p := reflect.ValueOf(&n)
+	fmt.Println(p, p.Type(), p.Kind(), p.CanSet(), p.Interface())
+	P := p.Elem()
+	P.SetInt(100)
+	fmt.Println(P.Interface())
 }
