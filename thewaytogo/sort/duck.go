@@ -1,11 +1,12 @@
-package main
+package sort
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 )
 
-func main() {
+func p() {
 	b := new(Bird)
 	DuckDance(b)
 
@@ -97,12 +98,12 @@ func mapFunc(mf func(obj) obj, list []obj) []obj {
 	return result
 }
 
-type Stack interface {
-	Len() int
-	IsEmpty() bool
-	Push(x interface{})
-	Pop() (x interface{}, error)
-}
+// type Stack interface {
+// 	Len() int
+// 	IsEmpty() bool
+// 	Push(x interface{})
+// 	Pop() (x interface{}, error)
+// }
 
 type Stack []interface{}
 
