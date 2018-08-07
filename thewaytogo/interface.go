@@ -187,5 +187,5 @@ func reflection() {
 	fmt.Println(p, p.Type(), p.Kind(), p.CanSet(), p.Interface())
 	P := p.Elem()
 	P.SetInt(100)
-	fmt.Println(P.Interface())
+	fmt.Println(P.Interface(), n)
 }

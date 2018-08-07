@@ -270,14 +270,21 @@ were allowed to succeed, it would not update x, even though v looks like it was 
 
 If this seems bizarre, it's not. It's actually a familiar situation in unusual garb. Think of passing x to a function:
 
+``` go
 f(x)
+```
+
 We would not expect f to be able to modify x because we passed a copy of x's value, not x itself. If we want f to modify x directly we must pass our function the address of x (that is, a pointer to x):
 
+``` go
 f(&x)
+```
+
 This is straightforward and familiar, and reflection works the same way. If we want to modify x by reflection, we must give the reflection library a pointer to the value we want to modify.
 
 Let's do that. First we initialize x as usual and then create a reflection value that points to it, called p.
 
+``` go
 var x float64 = 3.4
 p := reflect.ValueOf(&x) // Note: take the address of x.
 fmt.Println("type of p:", p.Type())
@@ -286,15 +293,21 @@ The output so far is
 
 type of p: *float64
 settability of p: false
+```
+
 The reflection object p isn't settable, but it's not p we want to set, it's (in effect) *p. To get to what p points to, we call the Elem method of Value, which indirects through the pointer, and save the result in a reflection Value called v:
 
+``` go
 v := p.Elem()
 fmt.Println("settability of v:", v.CanSet())
 Now v is a settable reflection object, as the output demonstrates,
 
 settability of v: true
+```
+
 and since it represents x, we are finally able to use v.SetFloat to modify the value of x:
 
+``` go
 v.SetFloat(7.1)
 fmt.Println(v.Interface())
 fmt.Println(x)
@@ -302,13 +315,17 @@ The output, as expected, is
 
 7.1
 7.1
+```
+
 Reflection can be hard to understand but it's doing exactly what the language does, albeit through reflection Types and Values that can disguise what's going on. Just keep in mind that reflection Values need the address of something in order to modify what they represent.
 
-Structs
+## Structs
+
 In our previous example v wasn't a pointer itself, it was just derived from one. A common way for this situation to arise is when using reflection to modify the fields of a structure. As long as we have the address of the structure, we can modify its fields.
 
 Here's a simple example that analyzes a struct value, t. We create the reflection object with the address of the struct because we'll want to modify it later. Then we set typeOfT to its type and iterate over the fields using straightforward method calls (see package reflect for details). Note that we extract the names of the fields from the struct type, but the fields themselves are regular reflect.Value objects.
 
+``` go
 type T struct {
     A int
     B string
@@ -325,55 +342,36 @@ The output of this program is
 
 0: A int = 23
 1: B string = skidoo
+```
+
 There's one more point about settability introduced in passing here: the field names of T are upper case (exported) because only exported fields of a struct are settable.
 
 Because s contains a settable reflection object, we can modify the fields of the structure.
 
+``` go
 s.Field(0).SetInt(77)
 s.Field(1).SetString("Sunset Strip")
 fmt.Println("t is now", t)
+```
+
 And here's the result:
 
+``` go
 t is now {77 Sunset Strip}
+```
+
 If we modified the program so that s was created from t, not &t, the calls to SetInt and SetString would fail as the fields of t would not be settable.
 
-Conclusion
+## Conclusion
+
 Here again are the laws of reflection:
 
-Reflection goes from interface value to reflection object.
-Reflection goes from reflection object to interface value.
-To modify a reflection object, the value must be settable.
++ Reflection goes from interface value to reflection object.
++ Reflection goes from reflection object to interface value.
++ To modify a reflection object, the value must be settable.
+
 Once you understand these laws reflection in Go becomes much easier to use, although it remains subtle. It's a powerful tool that should be used with care and avoided unless strictly necessary.
 
 There's plenty more to reflection that we haven't covered — sending and receiving on channels, allocating memory, using slices and maps, calling methods and functions — but this post is long enough. We'll cover some of those topics in a later article.
 
 By Rob Pike
-
-Related articles
-HTTP/2 Server Push
-Introducing HTTP Tracing
-Generating code
-Introducing the Go Race Detector
-Go maps in action
-go fmt your code
-Organizing Go code
-Debugging Go programs with the GNU Debugger
-The Go image/draw package
-The Go image package
-Error handling and Go
-"First Class Functions in Go"
-Profiling Go Programs
-A GIF decoder: an exercise in Go interfaces
-Introducing Gofix
-Godoc: documenting Go code
-Gobs of data
-C? Go? Cgo!
-JSON and Go
-Go Slices: usage and internals
-Go Concurrency Patterns: Timing out, moving on
-Defer, Panic, and Recover
-Share Memory By Communicating
-JSON-RPC: a tale of interfaces
-Except as noted, the content of this page is licensed under the Creative Commons Attribution 3.0 License,
-and code is licensed under a BSD license.
-Terms of Service | Privacy Policy | View the source code
