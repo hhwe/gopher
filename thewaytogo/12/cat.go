@@ -31,6 +31,8 @@ func main() {
 		}
 		cat(bufio.NewReader(f))
 	}
+
+	fmt.Sprintln()
 }
 
 func cat(r *bufio.Reader) {
