@@ -7,7 +7,6 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -167,17 +166,17 @@ func scrapy(url string, urlChannel chan string) {
 	urlChannel <- url
 }
 
-func main() {
-	args := os.Args
-	if len(args) != 2 {
-		log.Fatalln("error args, 2 need")
-	}
+// func main() {
+// 	args := os.Args
+// 	if len(args) != 2 {
+// 		log.Fatalln("error args, 2 need")
+// 	}
 
-	url := args[1]
-	defer close(urlChannel)
+// 	url := args[1]
+// 	defer close(urlChannel)
 
-	go crawl(url, urlChannel)
+// 	go crawl(url, urlChannel)
 
-	p := <-urlChannel
-	fmt.Println(p, url)
-}
+// 	p := <-urlChannel
+// 	fmt.Println(p, url)
+// }
