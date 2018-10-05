@@ -37,7 +37,7 @@ func newRouter() *mux.Router {
 	// Declare the handler, that routes requests to their respective filename.
 	// The fileserver is wrapped in the `stripPrefix` method, because we want to
 	// remove the "/assets/" prefix when looking for files.
-	// For example, if we type "/assets/index.html" in our browser, the file server
+	// For webexample, if we type "/assets/index.html" in our browser, the file server
 	// will look for only "index.html" inside the directory declared above.
 	// If we did not strip the prefix, the file server would look for
 	// "./assets/assets/index.html", and yield an error

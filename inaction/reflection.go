@@ -92,8 +92,8 @@ func main() {
 	fmt.Println(g)
 
 	// fixme: Structs
-	// In our previous example v wasn't a pointer itself, it was just derived from one. A common way for this situation to arise is when using reflection to modify the fields of a structure. As long as we have the address of the structure, we can modify its fields.
-	//	Here's a simple example that analyzes a struct value, t. We create the reflection object with the address of the struct because we'll want to modify it later. Then we set typeOfT to its type and iterate over the fields using straightforward method calls (see package reflect for details). Note that we extract the names of the fields from the struct type, but the fields themselves are regular reflect.Value objects.
+	// In our previous webexample v wasn't a pointer itself, it was just derived from one. A common way for this situation to arise is when using reflection to modify the fields of a structure. As long as we have the address of the structure, we can modify its fields.
+	//	Here's a simple webexample that analyzes a struct value, t. We create the reflection object with the address of the struct because we'll want to modify it later. Then we set typeOfT to its type and iterate over the fields using straightforward method calls (see package reflect for details). Note that we extract the names of the fields from the struct type, but the fields themselves are regular reflect.Value objects.
 
 	type T struct {
 		A int
