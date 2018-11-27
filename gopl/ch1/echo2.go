@@ -4,15 +4,23 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
 	s, sep := "", " "
-	for i, arg := range os.Args[1:] {
-		fmt.Println(i, arg)
-		s += arg + sep
+	start := time.Now()
+	for i := 1; i < 100; i++ {
+		for _, arg := range os.Args[:] {
+			s += arg + sep
+		}
+		fmt.Println(s)
 	}
-	fmt.Println(s)
+	fmt.Println(time.Since(start))
 
-	fmt.Println(strings.Join(os.Args[:], " "))
+	start1 := time.Now()
+	for i := 1; i < 100; i++ {
+		fmt.Println(strings.Join(os.Args[:], " "))
+	}
+	fmt.Println(time.Since(start1))
 }
