@@ -14,7 +14,7 @@ var (
 
 // targetBits is the block header storing the difficulty
 // at which the block was mined.
-const targetBits = 24
+const targetBits = 16
 
 // ProofOfWork holds a pointer to a block and a pointer to a target.
 type ProofOfWork struct {
@@ -43,6 +43,19 @@ func (pow *ProofOfWork) prepareData(nonce int) []byte {
 		},
 		[]byte{},
 	)
+}
+
+// Validate
+func (pow *ProofOfWork) Validate() bool {
+	var hashInt big.Int
+
+	data := pow.prepareData(pow.block.Nonce)
+	hash := sha256.Sum256(data)
+	hashInt.SetBytes(hash[:])
+
+	isValid := hashInt.Cmp(pow.target) == -1
+
+	return isValid
 }
 
 // Run implement the core of the PoW algorithm.
