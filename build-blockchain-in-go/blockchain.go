@@ -1,4 +1,4 @@
-package main
+powerpackage main
 
 // In its essence Blockchain is just a database with certain structure:
 // it’s an ordered, back-linked list.
