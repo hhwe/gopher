@@ -44,7 +44,9 @@ type Block struct {
 // 	return &block
 // }
 
-// Serialize the Block.
+// Serialize the Block. in BoltDB values can be only of []byte type,
+// and we want to store Block structs in the DB.
+// We’ll use encoding/gob to serialize the structs.
 func (b *Block) Serialize() []byte {
 	var result bytes.Buffer
 	encoder := gob.NewEncoder(&result)
@@ -57,6 +59,7 @@ func (b *Block) Serialize() []byte {
 	return result.Bytes()
 }
 
+// DeserializeBlock is deserializing BoltDB values and return a Block.
 func DeserializeBlock(d []byte) *Block {
 	var block Block
 
