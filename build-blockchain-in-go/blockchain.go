@@ -45,7 +45,13 @@ func (bc *Blockchain) AddBlock(data string) {
 	err = bc.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(blocksBucket))
 		err := b.Put(newBlock.Hash, newBlock.Serialize())
+		if err != nil {
+			panic(err)
+		}
 		err = b.Put([]byte("l"), newBlock.Hash)
+		if err != nil {
+			panic(err)
+		}
 		bc.tip = newBlock.Hash
 
 		return nil
@@ -78,8 +84,17 @@ func NewBlockchain() *Blockchain {
 		if b == nil {
 			genesis := NewGenesisBlock()
 			b, err := tx.CreateBucket([]byte(blocksBucket))
+			if err != nil {
+				panic(err)
+			}
 			err = b.Put(genesis.Hash, genesis.Serialize())
+			if err != nil {
+				panic(err)
+			}
 			err = b.Put([]byte("l"), genesis.Hash)
+			if err != nil {
+				panic(err)
+			}
 			tip = genesis.Hash
 		} else {
 			tip = b.Get([]byte("l"))
@@ -117,6 +132,9 @@ func (i *BlockchainIterator) Next() *Block {
 
 		return nil
 	})
+	if err != nil {
+		panic(err)
+	}
 
 	i.currentHash = block.PrevBlockHash
 
