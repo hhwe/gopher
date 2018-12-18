@@ -4,6 +4,11 @@ import (
 	"github.com/boltdb/bolt"
 )
 
+const (
+	dbFile       = "blockchain.db"
+	blocksBucket = "blocks"
+)
+
 // In its essence Blockchain is just a database with certain structure:
 // it’s an ordered, back-linked list.
 // Which means that blocks are stored in the insertion order
@@ -86,4 +91,34 @@ func NewBlockchain() *Blockchain {
 	bc := Blockchain{tip, db}
 
 	return &bc
+}
+
+// Iterator create a BlockchainIterator structor.
+func (bc *Blockchain) Iterator() *BlockchainIterator {
+	bci := &BlockchainIterator{bc.tip, bc.db}
+
+	return bci
+}
+
+// BlockchainIterator iterate over blocks in a blockchain.
+type BlockchainIterator struct {
+	currentHash []byte
+	db          *bolt.DB
+}
+
+// Next will return the next block from a blockchain.
+func (i *BlockchainIterator) Next() *Block {
+	var block *Block
+
+	err := i.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(blocksBucket))
+		encodedBlock := b.Get(i.currentHash)
+		block = DeserializeBlock(encodedBlock)
+
+		return nil
+	})
+
+	i.currentHash = block.PrevBlockHash
+
+	return block
 }
